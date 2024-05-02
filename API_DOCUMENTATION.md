@@ -2,11 +2,12 @@
 ---
 #### GET "/"
   *Hello world endpoint description*
+  
   **Params:**
   - String: name (default: "World")
 
   **Response:**
-  - String: body
+  {body: string}
 
 
 

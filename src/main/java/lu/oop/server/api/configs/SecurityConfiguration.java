@@ -1,4 +1,4 @@
-package lu.oop.server.api.config;
+package lu.oop.server.api.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

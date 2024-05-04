@@ -1,4 +1,4 @@
-package lu.oop.server.app.model;
+package lu.oop.server.app.models.users;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -6,10 +6,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+//{
+//    firstName: string;
+//    lastName: string;
+//    age: number | null;
+//    b: number | undefined; // Forbidden
+//
+//}
+
 @Entity
 @Table(name = "person")
-public class UserModel {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.INTEGER)
+abstract public class UserModel implements IUserModel {
     private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
@@ -22,9 +33,6 @@ public class UserModel {
     @Column(name = "lastName", nullable = false, length = 50)
     @JsonProperty("lastName")
     private String lastName;
-
-//    @Column(name = "login", nullable = false, length = 50)
-//    private String login;
 
     @Column(name = "phone", nullable = false, length = 50)
     @JsonIgnore
@@ -46,13 +54,6 @@ public class UserModel {
     @JsonProperty("avatarID")
     private Integer avatarId;
 
-    @Column(name = "role", nullable = false)
-    @JsonIgnore
-    private Integer role;
-
-    @Column(name = "subject", length = 50)
-    @JsonIgnore
-    private String subject;
 
     // Constructors
     public UserModel() {
@@ -82,14 +83,6 @@ public class UserModel {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
-//    public String getLogin() {
-//        return login;
-//    }
-//
-//    public void setLogin(String login) {
-//        this.login = login;
-//    }
 
     public String getPhone() {
         return phone;
@@ -136,36 +129,11 @@ public class UserModel {
         this.avatarId = avatarId;
     }
 
-    public Integer getRole() {
-        return role;
-    }
-
     @JsonProperty("role")
-    public String getRoleName() {
-        if(role == 0) {
-            return "user";
-        }
-        if(role == 1) {
-            return "teacher";
-        }
-        if(role == 2) {
-            return "parent";
-        }
-        if(role == 3) {
-            return "admin";
-        }
-        return null;
-    }
+    abstract public String getRoleName();
 
-    public void setRole(Integer role) {
-        this.role = role;
-    }
-
+    @JsonProperty("subject")
     public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
+        return null;
     }
 }

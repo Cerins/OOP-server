@@ -1,4 +1,4 @@
-package lu.oop.server.api.controller;
+package lu.oop.server.api.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +15,6 @@ public class HelloController {
     // Ok next we do the "Hello worlds"
     // We do it by giving request param
     // And then we return the string
-    // TODO how to send JSON
     @GetMapping("/")
     public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
         return String.format("Hello %s!", name);

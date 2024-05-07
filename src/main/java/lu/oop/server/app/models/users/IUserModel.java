@@ -1,5 +1,9 @@
 package lu.oop.server.app.models.users;
 
+import java.util.Set;
+
+import lu.oop.server.app.models.messages.MessageModel;
+
 public interface IUserModel {
     Long getId();
 
@@ -38,5 +42,7 @@ public interface IUserModel {
     String getRoleName();
 
     String getSubject();
+
+    Set<MessageModel> fetchRecievedMessages();
 
 }

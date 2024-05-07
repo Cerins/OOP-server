@@ -1,6 +1,8 @@
 package lu.oop.server.api.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lu.oop.server.app.models.messages.MessageModel;
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.services.IUserService;
@@ -8,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Optional;
+import java.util.Set;
 
 
 @RequestMapping("/users")
@@ -23,6 +27,7 @@ public class UserController {
             grounded = g;
         }
     }
+
     private IUserService userService;
 
     @Autowired
@@ -52,4 +57,15 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+
+    @GetMapping("/{id}/recievedMessages")
+    public ResponseEntity<Set<MessageModel>> fetchMessages(@PathVariable Long id) {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        IUserModel user = oUser.get();
+        return ResponseEntity.ok(user.fetchRecievedMessages());
+    }
+    
 }

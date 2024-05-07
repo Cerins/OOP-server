@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface IMessageService {
   public Optional<IMessageModel> getById(Long id);
-  public void create(String text, Long senderId, Long recieverId);
+  public void create(String text, Long senderId, Long receiverId);
 }
   

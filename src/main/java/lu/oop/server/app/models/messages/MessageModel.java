@@ -1,6 +1,6 @@
 package lu.oop.server.app.models.messages;
 
-import java.sql.Time;
+import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -22,7 +22,7 @@ public class MessageModel implements IMessageModel {
 
     @Column(name = "time", columnDefinition = "TIMESTAMP")
     @JsonProperty("time")
-    private Time time;
+    private Timestamp time;
 
     @ManyToOne
     @JoinColumn(name = "senderId")
@@ -30,13 +30,14 @@ public class MessageModel implements IMessageModel {
 
     @ManyToOne
     @JoinColumn(name = "receiverId")
-    private UserModel reciever;
+    private UserModel receiver;
     
 
 
     // Constructors
     public MessageModel() {
-        this.time = new Time(System.currentTimeMillis());
+        this.time = new Timestamp(System.currentTimeMillis());
+        this.id = null;
     }
 
     // Getters and Setters
@@ -48,7 +49,7 @@ public class MessageModel implements IMessageModel {
         return text;
     }
 
-    public Time getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
@@ -60,7 +61,7 @@ public class MessageModel implements IMessageModel {
         this.sender = sender;
     }
 
-    public void setReciever(UserModel reciever) {
-        this.reciever = reciever;
+    public void setReceiver(UserModel receiver) {
+        this.receiver = receiver;
     }
 }

@@ -62,7 +62,7 @@ abstract public class UserModel implements IUserModel {
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<MessageModel> sentMessages = new HashSet<>();
 
-    @OneToMany(mappedBy = "reciever", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<MessageModel> recievedMessages = new HashSet<>();
     
     // Constructors

@@ -1,12 +1,12 @@
 package lu.oop.server.app.models.messages;
 import lu.oop.server.app.models.users.*;
-import java.sql.Time;
+import java.sql.Timestamp;
 
 public interface IMessageModel {
     String getText();
-    Time getTime();
+    Timestamp getTime();
 
     void setText(String text);
     void setSender(UserModel sender);
-    void setReciever(UserModel reciever);
+    void setReceiver(UserModel receiver);
 }

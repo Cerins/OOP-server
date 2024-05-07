@@ -3,7 +3,6 @@ package lu.oop.server.api.controllers;
 import lu.oop.server.app.services.IMessageService;
 import lu.oop.server.app.models.messages.*;
 
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,19 +16,19 @@ public class MessageController {
 
     private IMessageService messageService;
 
-    public class MessageRequest {
+    public static class MessageRequest {
         private String text;
-        private Long senderId;
-        private Long recieverId;
+        private int senderId;
+        private int receiverId;
 
         public String getText(){
             return text;
         }
-        public Long getSenderId(){
+        public int getSenderId(){
             return senderId;
         }
-        public Long getReceiverId(){
-            return recieverId;
+        public int getReceiverId(){
+            return receiverId;
         }
     }
 
@@ -48,12 +47,12 @@ public class MessageController {
         return ResponseEntity.ok(message);
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/")
     public ResponseEntity<IMessageModel> createMessage(@RequestBody MessageRequest messageRequest) {
         try {
             String text = messageRequest.getText();
-            Long senderId = messageRequest.getSenderId();
-            Long receiverId = messageRequest.getReceiverId();
+            Long senderId = Long.valueOf(messageRequest.getSenderId());
+            Long receiverId = Long.valueOf(messageRequest.getReceiverId());
 
             messageService.create(text, senderId, receiverId);
 

@@ -26,12 +26,15 @@ public class MessageModel implements IMessageModel {
 
     @ManyToOne
     @JoinColumn(name = "senderId")
+    @JsonProperty("sender")
     private UserModel sender;
 
     @ManyToOne
     @JoinColumn(name = "receiverId")
+    @JsonProperty("reciever")
     private UserModel receiver;
     
+
 
 
     // Constructors

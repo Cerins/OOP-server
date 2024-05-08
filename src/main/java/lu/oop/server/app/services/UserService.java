@@ -16,8 +16,6 @@ public class UserService implements IUserService {
         this.userRepository = userRepository;
     }
 
-
-
     public Optional<IUserModel> getById(Long id) {
         return userRepository.findById(id).map(u -> u);
     }

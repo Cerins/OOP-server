@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class MessageService implements IMessageService {
@@ -19,11 +22,6 @@ public class MessageService implements IMessageService {
     public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
-    }
-
-
-    public Optional<IMessageModel> getById(Long id) {
-        return messageRepository.findById(id).map(u -> u);
     }
 
     public void create(String text, Long senderId, Long receiverId){
@@ -40,5 +38,15 @@ public class MessageService implements IMessageService {
         message.setSender(mbySender.get());
         message.setReceiver(mbyReceiver.get());
         messageRepository.save(message);
+    }
+
+    public List<MessageModel> getConversation(Long firstUserId, Long secondUserId){
+        List<MessageModel> conversationMessages = messageRepository.findConversationQuery(firstUserId, secondUserId);
+        return conversationMessages;
+    }
+
+    public Set<Integer> getConversations(Long userId){
+        Set<Integer> conversations = messageRepository.getUserConversationQuery(userId);
+        return conversations;
     }
 }

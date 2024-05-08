@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
+
+import java.util.List;
+import java.util.Set;
 
 
 @RequestMapping("/messages")
@@ -37,17 +39,7 @@ public class MessageController {
         this.messageService = MessageService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<IMessageModel> getMessageById(@PathVariable Long id) {
-        Optional<IMessageModel> mbyMessage = messageService.getById(id);
-        if(mbyMessage.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        IMessageModel message = mbyMessage.get();
-        return ResponseEntity.ok(message);
-    }
-
-    @PostMapping(value = "/")
+    @PostMapping("/")
     public ResponseEntity<IMessageModel> createMessage(@RequestBody MessageRequest messageRequest) {
         try {
             String text = messageRequest.getText();
@@ -60,6 +52,18 @@ public class MessageController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/conversation/{firstUserId}/{secondUserId}")
+    public ResponseEntity<List<MessageModel>> getMessageById(@PathVariable Long firstUserId, @PathVariable Long secondUserId) {
+        List<MessageModel> conversation = messageService.getConversation(firstUserId, secondUserId);
+        return ResponseEntity.ok(conversation);
+    }
+
+    @GetMapping("/conversations/{userId}")
+    public ResponseEntity<Set<Integer>> getMessageById(@PathVariable Long userId) {
+        Set<Integer> conversation = messageService.getConversations(userId);
+        return ResponseEntity.ok(conversation);
     }
     
 }

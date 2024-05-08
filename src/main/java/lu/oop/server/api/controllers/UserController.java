@@ -1,7 +1,6 @@
 package lu.oop.server.api.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.services.IUserService;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Optional;
 
 @RequestMapping("/users")
@@ -24,7 +22,6 @@ public class UserController {
             grounded = g;
         }
     }
-
     private IUserService userService;
 
     @Autowired

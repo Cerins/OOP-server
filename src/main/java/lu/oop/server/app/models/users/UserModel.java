@@ -139,10 +139,6 @@ abstract public class UserModel implements IUserModel {
         this.avatarId = avatarId;
     }
 
-    public Set<MessageModel> fetchRecievedMessages(){
-        return recievedMessages;
-    }
-
     @JsonProperty("role")
     abstract public String getRoleName();
 

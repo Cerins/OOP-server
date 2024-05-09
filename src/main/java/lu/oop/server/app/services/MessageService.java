@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.LinkedList;
+import java.sql.Timestamp;
 
 @Service
 public class MessageService implements IMessageService {
@@ -38,8 +40,11 @@ public class MessageService implements IMessageService {
         messageRepository.save(message);
     }
 
-    public List<IMessageModel> getConversation(Long firstUserId, Long secondUserId){
-        List<IMessageModel> conversationMessages = messageRepository.findConversationQuery(firstUserId, secondUserId);
+    public List<IMessageModel> getConversation(Long firstUserId, Long secondUserId, Timestamp dateTimeFrom){
+        List<IMessageModel> conversationMessages = new LinkedList<>();
+        
+        conversationMessages = messageRepository.findConversationQuery(firstUserId, secondUserId, dateTimeFrom);
+        
         return conversationMessages;
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.sql.Timestamp;
 
 
 @RequestMapping("/messages")
@@ -33,12 +34,28 @@ public class MessageController {
         }
     }
 
+    public static class ConversationRequest {
+        private int user1Id;
+        private int user2Id;
+        private Timestamp dateTimeFrom;
+
+        public int getUser1Id(){
+            return user1Id;
+        }
+        public int getUser2Id(){
+            return user2Id;
+        }
+        public Timestamp getDateTimeFrom(){
+            return dateTimeFrom;
+        }
+    }
+
     @Autowired
     MessageController(IMessageService MessageService) {
         this.messageService = MessageService;
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<IMessageModel> createMessage(@RequestBody MessageRequest messageRequest) {
         try {
             String text = messageRequest.getText();
@@ -57,9 +74,13 @@ public class MessageController {
         }
     }
 
-    @GetMapping("/{firstUserId}/{secondUserId}")
-    public ResponseEntity<List<IMessageModel>> getMessageById(@PathVariable Long firstUserId, @PathVariable Long secondUserId) {
-        List<IMessageModel> conversation = messageService.getConversation(firstUserId, secondUserId);
+    @GetMapping()
+    public ResponseEntity<List<IMessageModel>> getMessageById(@RequestBody ConversationRequest conversationRequest) {
+        Long user1Id = Long.valueOf(conversationRequest.getUser1Id());
+        Long user2Id = Long.valueOf(conversationRequest.getUser2Id());
+        Timestamp dateTimeFrom = conversationRequest.getDateTimeFrom();
+
+        List<IMessageModel> conversation = messageService.getConversation(user1Id, user2Id, dateTimeFrom);
         return ResponseEntity.ok(conversation);
     }
 }

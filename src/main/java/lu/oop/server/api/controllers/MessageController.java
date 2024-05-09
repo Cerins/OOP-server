@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 
 @RequestMapping("/messages")
@@ -45,6 +44,10 @@ public class MessageController {
             String text = messageRequest.getText();
             Long senderId = Long.valueOf(messageRequest.getSenderId());
             Long receiverId = Long.valueOf(messageRequest.getReceiverId());
+            
+            if(text == null){
+                text = "";
+            }
 
             messageService.create(text, senderId, receiverId);
 
@@ -54,16 +57,9 @@ public class MessageController {
         }
     }
 
-    @GetMapping("/conversation/{firstUserId}/{secondUserId}")
-    public ResponseEntity<List<MessageModel>> getMessageById(@PathVariable Long firstUserId, @PathVariable Long secondUserId) {
-        List<MessageModel> conversation = messageService.getConversation(firstUserId, secondUserId);
+    @GetMapping("/{firstUserId}/{secondUserId}")
+    public ResponseEntity<List<IMessageModel>> getMessageById(@PathVariable Long firstUserId, @PathVariable Long secondUserId) {
+        List<IMessageModel> conversation = messageService.getConversation(firstUserId, secondUserId);
         return ResponseEntity.ok(conversation);
     }
-
-    @GetMapping("/conversations/{userId}")
-    public ResponseEntity<Set<Integer>> getMessageById(@PathVariable Long userId) {
-        Set<Integer> conversation = messageService.getConversations(userId);
-        return ResponseEntity.ok(conversation);
-    }
-    
 }

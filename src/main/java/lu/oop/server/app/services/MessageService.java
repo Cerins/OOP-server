@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class MessageService implements IMessageService {
@@ -40,13 +38,8 @@ public class MessageService implements IMessageService {
         messageRepository.save(message);
     }
 
-    public List<MessageModel> getConversation(Long firstUserId, Long secondUserId){
-        List<MessageModel> conversationMessages = messageRepository.findConversationQuery(firstUserId, secondUserId);
+    public List<IMessageModel> getConversation(Long firstUserId, Long secondUserId){
+        List<IMessageModel> conversationMessages = messageRepository.findConversationQuery(firstUserId, secondUserId);
         return conversationMessages;
-    }
-
-    public Set<Integer> getConversations(Long userId){
-        Set<Integer> conversations = messageRepository.getUserConversationQuery(userId);
-        return conversations;
     }
 }

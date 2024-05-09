@@ -31,7 +31,7 @@ public class MessageModel implements IMessageModel {
 
     @ManyToOne
     @JoinColumn(name = "receiverId")
-    @JsonProperty("reciever")
+    @JsonProperty("receiver")
     private UserModel receiver;
     
 

@@ -11,6 +11,16 @@
 
   ---
 
+#### GET "/users/{id}/conversations"
+  *Get ids of the users the user is having conversations with*
+  
+  **Params:**
+  id: int
+
+  **Response:**
+  [id: int]
+
+
 #### POST "/messages/"
   *Create a new message with given JSON body information*
   
@@ -24,17 +34,8 @@
   **Response:**
   STATUS 200 OK
 
-#### GET "/messages/conversations/{userId}"
-  *Get ids of the users the userId identified user is having conversations with*
-  
-  **Params:**
-  userId: int
-
-  **Response:**
-  [id: int]
-
-#### GET "/messages/conversation/{userId1}/{userId2}"
-  *Get the messages of a conversation between user1 and user2 in chronological order*
+#### GET "/messages/{userId1}/{userId2}"
+  *Get all messages sent between user1 and user2 in chronological order*
   
   **Params:**
   userId1: int

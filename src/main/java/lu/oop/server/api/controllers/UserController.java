@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
 
+import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/users")
 @RestController
@@ -51,5 +52,11 @@ public class UserController {
             return ResponseEntity.ok(new GroundedRes(p.childGrounded()));
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @GetMapping("/{id}/conversations")
+    public ResponseEntity<List<Integer>> getMessageById(@PathVariable Long id) {
+        List<Integer> conversation = userService.getConversations(id);
+        return ResponseEntity.ok(conversation);
     }
 }

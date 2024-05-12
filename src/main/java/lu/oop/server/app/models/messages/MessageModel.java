@@ -1,10 +1,12 @@
 package lu.oop.server.app.models.messages;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lu.oop.server.app.models.users.*;
+import lu.oop.server.app.models.files.FileModel;
 
 @Entity
 @Table(name = "message")
@@ -33,9 +35,6 @@ public class MessageModel implements IMessageModel {
     @JoinColumn(name = "receiverId")
     @JsonProperty("receiver")
     private UserModel receiver;
-    
-
-
 
     // Constructors
     public MessageModel() {
@@ -67,4 +66,6 @@ public class MessageModel implements IMessageModel {
     public void setReceiver(UserModel receiver) {
         this.receiver = receiver;
     }
+
+    
 }

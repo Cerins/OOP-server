@@ -38,7 +38,7 @@ abstract public class UserModel implements IUserModel {
     @JsonIgnore
     private String phone;
 
-    @Column(name = "email", nullable = false, length = 50)
+    @Column(name = "email", nullable = false, length = 50, unique = true)
     @JsonIgnore
     private String email;
 

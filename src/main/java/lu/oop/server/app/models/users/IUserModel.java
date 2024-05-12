@@ -1,5 +1,4 @@
 package lu.oop.server.app.models.users;
-
 public interface IUserModel {
     Long getId();
 
@@ -38,5 +37,4 @@ public interface IUserModel {
     String getRoleName();
 
     String getSubject();
-
 }

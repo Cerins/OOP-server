@@ -6,6 +6,7 @@ import lu.oop.server.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,5 +24,9 @@ public class UserService implements IUserService {
     }
     public IUserModel save(IUserModel user) {
         return userRepository.save((UserModel)user);
+    }
+    public List<Integer> getConversations(Long userId) {
+        List<Integer> conversations = userRepository.getUserConversationQuery(userId);
+        return conversations;
     }
 }

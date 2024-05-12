@@ -12,8 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
 
+import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/users")
 @RestController
@@ -58,5 +59,11 @@ public class UserController {
         }
         // Not db needed since we already know the result of the user
         return ResponseEntity.ok(new GroundedRes(loggedInUser.childGrounded()));
+    }
+
+    @GetMapping("/{id}/conversations")
+    public ResponseEntity<List<Integer>> getMessageById(@PathVariable Long id) {
+        List<Integer> conversation = userService.getConversations(id);
+        return ResponseEntity.ok(conversation);
     }
 }

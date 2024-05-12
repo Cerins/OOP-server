@@ -4,6 +4,11 @@ package lu.oop.server.app.models.users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
+import lu.oop.server.app.models.messages.MessageModel;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 //{
@@ -54,7 +59,12 @@ abstract public class UserModel implements IUserModel {
     @JsonProperty("avatarID")
     private Integer avatarId;
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<MessageModel> sentMessages = new HashSet<>();
 
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<MessageModel> recievedMessages = new HashSet<>();
+    
     // Constructors
     public UserModel() {
     }

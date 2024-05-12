@@ -7,5 +7,5 @@ import lu.oop.server.app.models.files.FileModel;
 
 public interface IFileMessageModel extends IMessageModel {
   public List<Blob> downloadFiles();
-  public void attachFiles(List<FileModel> files);
+  public void attachFile(FileModel file);
 }

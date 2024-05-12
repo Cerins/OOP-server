@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.sql.Blob;
 import java.sql.Timestamp;
 
 
@@ -22,6 +23,7 @@ public class MessageController {
         private String text;
         private int senderId;
         private int receiverId;
+        private Blob file;
 
         public String getText(){
             return text;
@@ -31,6 +33,9 @@ public class MessageController {
         }
         public int getReceiverId(){
             return receiverId;
+        }
+        public Blob getFile(){
+            return file;
         }
     }
 
@@ -61,12 +66,13 @@ public class MessageController {
             String text = messageRequest.getText();
             Long senderId = Long.valueOf(messageRequest.getSenderId());
             Long receiverId = Long.valueOf(messageRequest.getReceiverId());
+            Blob file = messageRequest.getFile();
             
             if(text == null){
                 text = "";
             }
 
-            messageService.create(text, senderId, receiverId);
+            messageService.create(text, senderId, receiverId, file);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException e) {
@@ -75,12 +81,19 @@ public class MessageController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<IMessageModel>> getMessageById(@RequestBody ConversationRequest conversationRequest) {
+    public ResponseEntity<List<IMessageModel>> getConversation(@RequestBody ConversationRequest conversationRequest) {
         Long user1Id = Long.valueOf(conversationRequest.getUser1Id());
         Long user2Id = Long.valueOf(conversationRequest.getUser2Id());
         Timestamp dateTimeFrom = conversationRequest.getDateTimeFrom();
 
         List<IMessageModel> conversation = messageService.getConversation(user1Id, user2Id, dateTimeFrom);
         return ResponseEntity.ok(conversation);
+    }
+
+    @GetMapping("/{id}/attachments")
+    public ResponseEntity<List<Blob>> getFiles(@PathVariable Long id) {
+
+        List<Blob> files = messageService.downloadFiles(id);
+        return ResponseEntity.ok(files);
     }
 }

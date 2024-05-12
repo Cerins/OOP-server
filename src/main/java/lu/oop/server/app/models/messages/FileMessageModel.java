@@ -27,9 +27,7 @@ public class FileMessageModel extends MessageModel implements IFileMessageModel 
       return data;
       
     }
-    public void attachFiles(List<FileModel> files){
-      for(FileModel file: files){
-        attachments.add(file);
-      }
+    public void attachFile(FileModel file){
+      attachments.add(file);
     };
 }

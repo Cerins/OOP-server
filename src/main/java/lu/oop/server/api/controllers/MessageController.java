@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.sql.Blob;
 import java.sql.Timestamp;
 
 
@@ -23,7 +22,9 @@ public class MessageController {
         private String text;
         private int senderId;
         private int receiverId;
-        private Blob file;
+        private int respondsToId;
+        private byte[] file;
+        private String fileName;
 
         public String getText(){
             return text;
@@ -34,8 +35,14 @@ public class MessageController {
         public int getReceiverId(){
             return receiverId;
         }
-        public Blob getFile(){
+        public int getRespondsToId(){
+            return respondsToId;
+        }
+        public byte[] getFile(){
             return file;
+        }
+        public String getFileName(){
+            return fileName;
         }
     }
 
@@ -66,13 +73,15 @@ public class MessageController {
             String text = messageRequest.getText();
             Long senderId = Long.valueOf(messageRequest.getSenderId());
             Long receiverId = Long.valueOf(messageRequest.getReceiverId());
-            Blob file = messageRequest.getFile();
+            Long respondsToId = Long.valueOf(messageRequest.getRespondsToId());
+            byte[] file = messageRequest.getFile();
+            String fileName = messageRequest.getFileName();
             
             if(text == null){
                 text = "";
             }
 
-            messageService.create(text, senderId, receiverId, file);
+            messageService.create(text, senderId, receiverId, respondsToId, file, fileName);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException e) {
@@ -91,9 +100,9 @@ public class MessageController {
     }
 
     @GetMapping("/{id}/attachments")
-    public ResponseEntity<List<Blob>> getFiles(@PathVariable Long id) {
+    public ResponseEntity<List<byte[]>> getFiles(@PathVariable Long id) {
 
-        List<Blob> files = messageService.downloadFiles(id);
+        List<byte[]> files = messageService.downloadFiles(id);
         return ResponseEntity.ok(files);
     }
 }

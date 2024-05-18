@@ -1,33 +1,24 @@
 package lu.oop.server.app.models.messages;
 
-import java.sql.Blob;
 import java.util.LinkedList;
 import java.util.List;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lu.oop.server.app.models.files.FileModel;
 
+@Entity
+@Table(name = "file_message")
 public class FileMessageModel extends MessageModel implements IFileMessageModel {
-    @ManyToMany
-    @JoinTable(
-    name = "message_file", 
-    joinColumns = @JoinColumn(name = "messageId"), 
-    inverseJoinColumns = @JoinColumn(name = "fileId"))
-    List<FileModel> attachments;
-
-
-    public List<Blob> downloadFiles(){
-      List<FileModel> files = attachments;
-      List<Blob> data = new LinkedList<>();
-      for(FileModel file: files){
-        data.add(file.getFile());
-      }
-      return data;
-      
+    public FileMessageModel(){
+      files = new LinkedList<>();
     }
+
+    public List<FileModel> getFiles(){
+      return files;
+    }
+
     public void attachFile(FileModel file){
-      attachments.add(file);
+      files.add(file);
     };
 }

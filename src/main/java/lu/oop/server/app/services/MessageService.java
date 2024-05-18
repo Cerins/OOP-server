@@ -12,9 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.Date;
 import java.util.LinkedList;
-import java.sql.Blob;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 @Service
 public class MessageService implements IMessageService {
@@ -29,31 +30,48 @@ public class MessageService implements IMessageService {
         this.fileRepository = fileRepository;
     }
 
-    public void create(String text, Long senderId, Long receiverId, Blob file){
+    public void create(String text, Long senderId, Long receiverId, Long respondsToId, byte[] file, String fileName){
 
         Optional<UserModel> mbySender = userRepository.findById(senderId);
         Optional<UserModel> mbyReceiver = userRepository.findById(receiverId);
+        Optional<MessageModel> mbyRespondsTo = messageRepository.findById(respondsToId);
 
         if (mbySender.isEmpty() || mbyReceiver.isEmpty()) {
             throw new IllegalArgumentException("Sender or receiver not found");
         }
+        
+        UserModel sender = mbySender.get();
+        UserModel receiver = mbyReceiver.get();
 
-        MessageModel message = new MessageModel();
-
-        message.setText(text);
-        message.setSender(mbySender.get());
-        message.setReceiver(mbyReceiver.get());
-
-        if (file != null ){
-            FileMessageModel fileMessage = (FileMessageModel) message;
+        if (file != null) {
             FileModel fileModel = new FileModel();
-            fileModel.setCreator(mbySender.get());
+            if(fileName == null){
+                fileName = "file-" + new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+            }
+            fileModel.setCreator(sender);
             fileModel.setFile(file);
+            fileModel.setCreator(sender);
+            fileModel.setName(fileName);
             fileRepository.save(fileModel);
+    
+            FileMessageModel fileMessage = new FileMessageModel();
+            fileMessage.setText(text);
+            fileMessage.setSender(sender);
+            fileMessage.setReceiver(receiver);
+            if(mbyRespondsTo.isPresent()){
+                fileMessage.setRespondsTo(mbyRespondsTo.get());
+            }
             fileMessage.attachFile(fileModel);
+    
             messageRepository.save(fileMessage);
-        } 
-        else{
+        } else {
+            MessageModel message = new MessageModel();
+            message.setText(text);
+            message.setSender(sender);
+            message.setReceiver(receiver);
+            if(mbyRespondsTo.isPresent()){
+                message.setRespondsTo(mbyRespondsTo.get());
+            }
             messageRepository.save(message);
         }
     }
@@ -66,7 +84,7 @@ public class MessageService implements IMessageService {
         return conversationMessages;
     }
 
-    public List<Blob> downloadFiles(Long id){
+    public List<byte[]> downloadFiles(Long id){
         Optional<MessageModel> mbyMessage = messageRepository.findById(id);
 
         if (mbyMessage.isEmpty()) {
@@ -77,8 +95,14 @@ public class MessageService implements IMessageService {
 
         if(message instanceof IFileMessageModel){
             IFileMessageModel fileMessage = (IFileMessageModel) message;
-            return fileMessage.downloadFiles();
+            List<FileModel> files = fileMessage.getFiles();
+            List<byte[]> data = new LinkedList<>();
+            for(FileModel file: files){
+                data.add(file.getFile());
+              }
+          return data;
         }
-        return new LinkedList<Blob>();
+
+        return new LinkedList<byte[]>();
     }
 }

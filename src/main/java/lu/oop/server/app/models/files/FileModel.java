@@ -1,10 +1,6 @@
 package lu.oop.server.app.models.files;
 
-import java.sql.Blob;
-import java.sql.Timestamp;
-import java.util.List;
-
-import org.aspectj.bridge.Message;
+import lu.oop.server.app.models.users.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,15 +10,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lu.oop.server.app.models.messages.MessageModel;
-import lu.oop.server.app.models.users.*;
 
 @Entity
-@Table(name = "message")
+@Table(name = "file")
 public class FileModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,28 +23,21 @@ public class FileModel {
 
     @Column(name = "name", nullable = false, length = 50)
     @JsonProperty("name")
-    private String text;
+    private String name;
 
     @Column(name = "data", nullable =  false, columnDefinition = "BYTEA")
-    private Blob data;
+    private byte[] data;
 
     @ManyToOne
     @JoinColumn(name = "createdBy")
     @JsonProperty("createdBy")
     private UserModel createdBy;
 
-    @ManyToMany
-    @JoinTable(
-    name = "message_file", 
-    joinColumns = @JoinColumn(name = "fileId"), 
-    inverseJoinColumns = @JoinColumn(name = "messageId"))
-    List<MessageModel> messages;
-
     public FileModel() {
       this.id = null;
     }
 
-    public void setFile(Blob data){
+    public void setFile(byte[] data){
       this.data = data;
     }
 
@@ -60,11 +45,11 @@ public class FileModel {
       this.createdBy = user;
     }
 
-    public void attachToMessage(MessageModel message){
-      this.messages.add(message);
+    public void setName(String name){
+      this.name = name;
     }
 
-    public Blob getFile(){
+    public byte[] getFile(){
       return this.data;
     }
 }

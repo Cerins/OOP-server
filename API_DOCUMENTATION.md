@@ -22,7 +22,7 @@
 
 
 #### POST "/messages/"
-  *Create a new message with given JSON body information*
+  *Create a new message with given JSON body information. File can be passed as array of integers or a base64 string encoding of the file.*
   
   **Params:**
   {
@@ -30,7 +30,7 @@
   senderId: int,
   receiverId: int,
   respondsToId: int,
-  file: byte[],
+  file: integer[] or base64 string,
   fileName: String
   }
 
@@ -58,6 +58,14 @@
       hasFiles: Boolean
     }
   ]
+
+#### GET "/messages/{id}/attachments"
+ *Gets all files attached to the message with the given id. Returns them in byte64 encoding.*
+  **Params:**
+  id: int
+
+  **Response:**
+  [file: base64 string]
 
 
 

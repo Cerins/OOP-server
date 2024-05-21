@@ -22,6 +22,9 @@ public class MessageController {
         private String text;
         private int senderId;
         private int receiverId;
+        private int respondsToId;
+        private byte[] file;
+        private String fileName;
 
         public String getText(){
             return text;
@@ -31,6 +34,15 @@ public class MessageController {
         }
         public int getReceiverId(){
             return receiverId;
+        }
+        public int getRespondsToId(){
+            return respondsToId;
+        }
+        public byte[] getFile(){
+            return file;
+        }
+        public String getFileName(){
+            return fileName;
         }
     }
 
@@ -61,12 +73,15 @@ public class MessageController {
             String text = messageRequest.getText();
             Long senderId = Long.valueOf(messageRequest.getSenderId());
             Long receiverId = Long.valueOf(messageRequest.getReceiverId());
+            Long respondsToId = Long.valueOf(messageRequest.getRespondsToId());
+            byte[] file = messageRequest.getFile();
+            String fileName = messageRequest.getFileName();
             
             if(text == null){
                 text = "";
             }
 
-            messageService.create(text, senderId, receiverId);
+            messageService.create(text, senderId, receiverId, respondsToId, file, fileName);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException e) {
@@ -75,12 +90,19 @@ public class MessageController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<IMessageModel>> getMessageById(@RequestBody ConversationRequest conversationRequest) {
+    public ResponseEntity<List<IMessageModel>> getConversation(@RequestBody ConversationRequest conversationRequest) {
         Long user1Id = Long.valueOf(conversationRequest.getUser1Id());
         Long user2Id = Long.valueOf(conversationRequest.getUser2Id());
         Timestamp dateTimeFrom = conversationRequest.getDateTimeFrom();
 
         List<IMessageModel> conversation = messageService.getConversation(user1Id, user2Id, dateTimeFrom);
         return ResponseEntity.ok(conversation);
+    }
+
+    @GetMapping("/{id}/attachments")
+    public ResponseEntity<List<byte[]>> getFiles(@PathVariable Long id) {
+
+        List<byte[]> files = messageService.downloadFiles(id);
+        return ResponseEntity.ok(files);
     }
 }

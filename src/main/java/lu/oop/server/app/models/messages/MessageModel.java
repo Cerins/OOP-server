@@ -1,14 +1,17 @@
 package lu.oop.server.app.models.messages;
 
 import java.sql.Timestamp;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lu.oop.server.app.models.files.FileModel;
 import lu.oop.server.app.models.users.*;
 
 @Entity
 @Table(name = "message")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class MessageModel implements IMessageModel {
 
     @Id
@@ -26,14 +29,47 @@ public class MessageModel implements IMessageModel {
 
     @ManyToOne
     @JoinColumn(name = "senderId")
-    @JsonProperty("sender")
+    @JsonIgnore()
     private UserModel sender;
 
     @ManyToOne
     @JoinColumn(name = "receiverId")
-    @JsonProperty("receiver")
+    @JsonIgnore()
     private UserModel receiver;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "respondsToId")
+    @JsonIgnore()
+    private MessageModel respondsTo;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore()
+    @JoinTable(
+    name = "message_file", 
+    joinColumns = @JoinColumn(name = "message_id"), 
+    inverseJoinColumns = @JoinColumn(name = "file_id"))
+    List<FileModel> files;
+
+    //Custom Json
+    @JsonProperty("senderId")
+    public Long getSenderId() {
+        return sender != null ? sender.getId() : null;
+    }
+
+    @JsonProperty("receiverId")
+    public Long getReceiverId() {
+        return receiver != null ? receiver.getId() : null;
+    }
+
+    @JsonProperty("respondsToId")
+    public Long getRespondsToId() {
+        return respondsTo != null ? respondsTo.getId() : null;
+    }
+
+    @JsonProperty("hasFiles")
+    public Boolean hasFiles() {
+        return !files.isEmpty();
+    }
 
 
 
@@ -41,6 +77,7 @@ public class MessageModel implements IMessageModel {
     public MessageModel() {
         this.time = new Timestamp(System.currentTimeMillis());
         this.id = null;
+        this.respondsTo = null;
     }
 
     // Getters and Setters
@@ -66,5 +103,9 @@ public class MessageModel implements IMessageModel {
 
     public void setReceiver(UserModel receiver) {
         this.receiver = receiver;
+    }
+
+    public void setRespondsTo(MessageModel responds){
+        this.respondsTo = responds;
     }
 }

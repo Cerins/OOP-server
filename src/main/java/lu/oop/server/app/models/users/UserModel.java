@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import lu.oop.server.app.models.files.FileModel;
 import lu.oop.server.app.models.messages.MessageModel;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -64,6 +66,9 @@ abstract public class UserModel implements IUserModel {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<MessageModel> recievedMessages = new HashSet<>();
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<FileModel> files = new HashSet<>();
     
     // Constructors
     public UserModel() {

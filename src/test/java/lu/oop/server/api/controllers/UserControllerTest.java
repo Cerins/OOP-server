@@ -1,5 +1,6 @@
 package lu.oop.server.api.controllers;
 
+import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.app.models.users.IStudentModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.StudentModel;
@@ -29,12 +30,12 @@ public class UserControllerTest {
     public void getUserById_UserNotFound_ShouldReturnNotFound() {
         Long usrId = 1l;
         when(userService.getById(usrId)).thenReturn(Optional.empty());
-        ResponseEntity<IUserModel> res = userController.getUserById(usrId);
-        assertEquals(res.getStatusCode().value(), 404);
+        RequestException e =  assertThrows(RequestException.class, ()->userController.getUserById(usrId));
+        assertEquals(e.getCode().value(), 404);
     }
 
     @Test
-    public void getUserById_UserFound_ShouldReturnUser() {
+    public void getUserById_UserFound_ShouldReturnUser() throws RequestException {
         Long usrId = 1l;
         StudentModel st = new StudentModel();
         when(userService.getById(usrId)).thenReturn(Optional.of(st));

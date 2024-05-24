@@ -8,4 +8,7 @@ import java.util.Optional;
 public interface IUserService {
     public Optional<IUserModel> getById(Long id);
     public List<Integer> getConversations(Long userId);
+    public Optional<IUserModel> getByEmail(String email);
+
+    public IUserModel save(IUserModel user);
 }

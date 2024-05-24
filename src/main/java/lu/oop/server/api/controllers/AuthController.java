@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import java.util.Optional;
 
@@ -86,7 +89,7 @@ public class AuthController {
         String token = this.jwtUtil.generateToken(user.getId());
         return ResponseEntity.ok(new AuthLoginRes(token));
     }
-
+    // More about annotations here https://medium.com/paysafe-bulgaria/springboot-dto-validation-good-practices-and-breakdown-fee69277b3b0
     private static class AuthRegisterReq {
         String firstName;
 
@@ -97,6 +100,7 @@ public class AuthController {
         public String getLastName() {
             return lastName;
         }
+
 
         public String getEmail() {
             return email;
@@ -119,6 +123,8 @@ public class AuthController {
         }
 
         String lastName;
+        @Email(message = "email must be valid")
+        @NotBlank(message = "email can not be blank")
         String email;
         String password;
         String description;
@@ -130,7 +136,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<IUserModel> register(@RequestBody AuthRegisterReq req) throws RequestException {
+    public ResponseEntity<IUserModel> register(@Valid @RequestBody AuthRegisterReq req) throws RequestException {
         IUserModel usr;
         String role = req.getRole();
         if(role.equals("student")) {

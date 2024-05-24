@@ -66,7 +66,7 @@ public class RequestException extends Exception {
     public ErrorResponse toResponse(HttpServletRequest request) {
         String error = getError();
         if(error == null) {
-            getCode().getReasonPhrase();
+            error = getCode().getReasonPhrase();
         }
         return  new ErrorResponse(
                 getCode().value(),

@@ -1,6 +1,9 @@
 package lu.oop.server.api.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lu.oop.server.app.models.complaints.ComplaintModel;
+import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.services.IUserService;
@@ -59,6 +62,19 @@ public class UserController {
         }
         // Not db needed since we already know the result of the user
         return ResponseEntity.ok(new GroundedRes(loggedInUser.childGrounded()));
+    }
+
+    @GetMapping("/{id}/assignedComplaints")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<List<ComplaintModel>> assignedComplaints(@PathVariable Long id) {
+        IAdminModel loggedInUser = (IAdminModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(id)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        // Not db needed since we already know the result of the user
+        return ResponseEntity.ok(loggedInUser.getAssignedComplaints());
     }
 
     @GetMapping("/{id}/conversations")

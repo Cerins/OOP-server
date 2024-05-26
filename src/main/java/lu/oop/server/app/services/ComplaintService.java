@@ -6,12 +6,14 @@ import java.util.Optional;
 import java.sql.Timestamp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.ComplaintRepository;
 import lu.oop.server.app.repositories.UserRepository;
 
+@Service
 public class ComplaintService implements IComplaintService{
   private ComplaintRepository complaintRepository;
   private UserRepository userRepository;
@@ -22,7 +24,6 @@ public class ComplaintService implements IComplaintService{
       this.userRepository = userRepository;
   }
 
-  @Override
   public void createComplaint(String title, String text, Long complaintantId) {
     Optional<UserModel> mbyComplaintant = userRepository.findById(complaintantId);
 
@@ -38,7 +39,6 @@ public class ComplaintService implements IComplaintService{
     complaintRepository.save(complaint);
   }
 
-  @Override
   public void assignComplaint(Long defendantId, Long complaintId) {
     Optional<UserModel> mbyDefendant = userRepository.findById(defendantId);
     Optional<ComplaintModel> mbyComplaint = complaintRepository.findById(complaintId);
@@ -53,7 +53,6 @@ public class ComplaintService implements IComplaintService{
     complaintRepository.save(complaint);
   }
 
-  @Override
   public void closeComplaint(Long complaintId) {
     Optional<ComplaintModel> mbyComplaint = complaintRepository.findById(complaintId);
 
@@ -68,10 +67,8 @@ public class ComplaintService implements IComplaintService{
     complaintRepository.save(complaint);
   }
 
-  @Override
   public List<ComplaintModel> getUnasignedComplaints() {
     List<ComplaintModel> unassigned = complaintRepository.getUnassignedComplaints();
     return unassigned;
   }
-  
 }

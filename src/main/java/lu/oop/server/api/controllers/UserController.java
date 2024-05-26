@@ -64,6 +64,12 @@ public class UserController {
         return ResponseEntity.ok(new GroundedRes(loggedInUser.childGrounded()));
     }
 
+    @GetMapping("/{id}/conversations")
+    public ResponseEntity<List<Integer>> getMessageById(@PathVariable Long id) {
+        List<Integer> conversation = userService.getConversations(id);
+        return ResponseEntity.ok(conversation);
+    }
+
     @GetMapping("/{id}/assignedComplaints")
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<List<ComplaintModel>> assignedComplaints(@PathVariable Long id) {
@@ -73,13 +79,20 @@ public class UserController {
             logger.warn("User attempted to check other user");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        // Not db needed since we already know the result of the user
-        return ResponseEntity.ok(loggedInUser.getAssignedComplaints());
+        
+        // DB required to initialize the complaint collection
+        return ResponseEntity.ok(userService.getAssignedComplaints(id));
     }
 
-    @GetMapping("/{id}/conversations")
-    public ResponseEntity<List<Integer>> getMessageById(@PathVariable Long id) {
-        List<Integer> conversation = userService.getConversations(id);
-        return ResponseEntity.ok(conversation);
+    @GetMapping("/{id}/activeComplaint")
+    public ResponseEntity<ComplaintModel> activeComplaint(@PathVariable Long id) {
+        IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(id)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
+        return ResponseEntity.ok(userService.getActiveComplaint(id));
     }
 }

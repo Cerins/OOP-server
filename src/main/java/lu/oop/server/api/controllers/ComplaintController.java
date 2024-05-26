@@ -3,17 +3,23 @@ package lu.oop.server.api.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import lu.oop.server.api.controllers.MessageController.MessageRequest;
+import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.complaints.IComplaintModel;
-import lu.oop.server.app.models.messages.IMessageModel;
 import lu.oop.server.app.services.IComplaintService;
-import lu.oop.server.app.services.IMessageService;
 
+import java.util.List;
+
+@RequestMapping("/complaint")
+@RestController
 public class ComplaintController {
   private IComplaintService complaintService;
 
@@ -34,8 +40,8 @@ public class ComplaintController {
   }
 
   @Autowired
-  ComplaintController(IComplaintService complaintService) {
-      this.complaintService = complaintService;
+  ComplaintController(IComplaintService ComplaintService) {
+      this.complaintService = ComplaintService;
   }
   
   @PostMapping()
@@ -59,5 +65,41 @@ public class ComplaintController {
       } catch (IllegalArgumentException e) {
           return ResponseEntity.badRequest().build();
       }
+  }
+
+  @PatchMapping("/{id}/assign/{asigneeId}")
+  @PreAuthorize("hasRole('admin')")
+  public ResponseEntity<IComplaintModel> assignComplaint(@PathVariable int id, @PathVariable int asigneeId){
+    try {
+      Long complaintId = Long.valueOf(id);
+      Long assigneeId = Long.valueOf(asigneeId);
+
+      complaintService.assignComplaint(assigneeId, complaintId);
+
+      return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+  } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+  }
+  }
+
+
+  @PatchMapping("/{id}/close")
+  @PreAuthorize("hasRole('admin')")
+  public ResponseEntity<IComplaintModel> closeComplaint(@PathVariable int id){
+    try {
+      Long complaintId = Long.valueOf(id);
+
+      complaintService.closeComplaint(complaintId);
+
+      return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+  } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+  }
+  }
+
+  @GetMapping("/unassigned")
+  @PreAuthorize("hasRole('admin')")
+  public List<ComplaintModel> getUnassigned(){
+    return complaintService.getUnasignedComplaints();
   }
 }

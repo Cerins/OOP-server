@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lu.oop.server.app.models.users.UserModel;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -39,13 +40,29 @@ public class ComplaintModel implements IComplaintModel {
 
     @ManyToOne
     @JoinColumn(name = "complainantId")
-    @JsonProperty("complainantId")
+    @JsonIgnore()
     private UserModel complaintant;
 
     @ManyToOne
     @JoinColumn(name = "defendantId")
     @JsonProperty("defendantId")
+    @JsonIgnore()
     private UserModel defendant;
+
+    //Custom Json
+    @JsonProperty("complaintantId")
+    public Long getComplaintantId() {
+        return complaintant.getId();
+    }
+
+    @JsonProperty("defendantId")
+    public Long getDefendentId() {
+      if(defendant != null)
+        return defendant.getId();
+      else
+        return null;
+    }
+
 
     public ComplaintModel() {
       this.id = null;
@@ -54,28 +71,27 @@ public class ComplaintModel implements IComplaintModel {
       this.closedAt = null;
     }
 
-    @Override
     public void setTitle(String title) {
       this.title = title;
     }
 
-    @Override
     public void setText(String text) {
       this.text = text;
     }
 
-    @Override
     public void setComplaintant(UserModel complaintant) {
       this.complaintant = complaintant;
     }
 
-    @Override
     public void setDefendant(UserModel defendant) {
       this.defendant = defendant;
     }
 
-    @Override
     public void setClosedAt(Timestamp time) {
       this.closedAt = time;
+    }
+
+    public boolean isActive(){
+      return closedAt == null;
     }
 }

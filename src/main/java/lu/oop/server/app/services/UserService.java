@@ -1,5 +1,7 @@
 package lu.oop.server.app.services;
 
+import lu.oop.server.app.models.complaints.ComplaintModel;
+import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.UserRepository;
@@ -28,5 +30,26 @@ public class UserService implements IUserService {
     public List<Integer> getConversations(Long userId) {
         List<Integer> conversations = userRepository.getUserConversationQuery(userId);
         return conversations;
+    }
+    public List<ComplaintModel> getAssignedComplaints(Long id){
+        Optional<UserModel> mbyUser = userRepository.findById(id);
+        IAdminModel admin = (IAdminModel) mbyUser.get();
+        return admin.getAssignedComplaints();
+    }
+    public ComplaintModel getActiveComplaint(Long id) {
+        Optional<UserModel> mbyUser = userRepository.findById(id);
+        UserModel user = mbyUser.get();
+        List<ComplaintModel> complaints = user.getComplaints();
+
+        if(complaints.size() <= 0)
+            return null;
+
+        ComplaintModel lastComplaint = complaints.get(complaints.size() - 1);
+
+        if(!lastComplaint.isActive()){
+            return null;
+        }
+
+        return lastComplaint;
     }
 }

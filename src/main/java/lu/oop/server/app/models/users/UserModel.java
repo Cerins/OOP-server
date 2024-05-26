@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.List;
 
@@ -73,8 +74,8 @@ abstract public class UserModel implements IUserModel {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<FileModel> files = new HashSet<>();
 
-    @OneToMany(mappedBy="complaintant")
-    private List<ComplaintModel> complaints;
+    @OneToMany(mappedBy="complaintant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ComplaintModel> complaints = new LinkedList<>();
     
     // Constructors
     public UserModel() {
@@ -148,6 +149,10 @@ abstract public class UserModel implements IUserModel {
 
     public void setAvatarId(Integer avatarId) {
         this.avatarId = avatarId;
+    }
+
+    public List<ComplaintModel> getComplaints() {
+        return complaints;
     }
 
     @JsonProperty("role")

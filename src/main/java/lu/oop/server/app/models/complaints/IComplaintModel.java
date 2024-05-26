@@ -9,4 +9,5 @@ public interface IComplaintModel {
     void setComplaintant(UserModel complaintant);
     void setDefendant(UserModel defendant);
     void setClosedAt(Timestamp time);
+    boolean isActive();
 }

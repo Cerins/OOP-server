@@ -1,6 +1,9 @@
 package lu.oop.server.api.controllers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lu.oop.server.app.models.complaints.ComplaintModel;
+import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.IUserModel;
@@ -66,5 +69,31 @@ public class UserController {
     public ResponseEntity<List<Integer>> getMessageById(@PathVariable Long id) {
         List<Integer> conversation = userService.getConversations(id);
         return ResponseEntity.ok(conversation);
+    }
+
+    @GetMapping("/{id}/assignedComplaints")
+    @PreAuthorize("hasRole('admin')")
+    public ResponseEntity<List<ComplaintModel>> assignedComplaints(@PathVariable Long id) {
+        IAdminModel loggedInUser = (IAdminModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(id)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
+        // DB required to initialize the complaint collection
+        return ResponseEntity.ok(userService.getAssignedComplaints(id));
+    }
+
+    @GetMapping("/{id}/activeComplaint")
+    public ResponseEntity<ComplaintModel> activeComplaint(@PathVariable Long id) {
+        IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(id)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
+        return ResponseEntity.ok(userService.getActiveComplaint(id));
     }
 }

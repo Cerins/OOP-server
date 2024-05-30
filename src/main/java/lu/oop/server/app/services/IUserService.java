@@ -11,4 +11,7 @@ public interface IUserService {
     public List<Integer> getConversations(Long userId);
     public List<ComplaintModel> getAssignedComplaints(Long id);
     public ComplaintModel getActiveComplaint(Long id);
+    public Optional<IUserModel> getByEmail(String email);
+
+    public IUserModel save(IUserModel user);
 }

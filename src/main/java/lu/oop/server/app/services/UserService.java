@@ -1,9 +1,13 @@
 package lu.oop.server.app.services;
 
+import jakarta.transaction.Transactional;
 import lu.oop.server.app.models.complaints.ComplaintModel;
+import lu.oop.server.app.models.tags.ITagModel;
+import lu.oop.server.app.models.tags.TagModel;
 import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.UserModel;
+import lu.oop.server.app.repositories.TagRepository;
 import lu.oop.server.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +18,15 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
     private UserRepository userRepository;
+
+    private TagRepository tagRepository;
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(
+            UserRepository userRepository,
+            TagRepository tagRepository
+    ) {
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
     }
     public Optional<IUserModel> getById(Long id) {
         return userRepository.findById(id).map(u -> u);
@@ -30,6 +40,9 @@ public class UserService implements IUserService {
     }
     public IUserModel save(IUserModel user) {
         return userRepository.save((UserModel)user);
+    }
+    public void delete(IUserModel user) {
+        userRepository.delete((UserModel)user);
     }
     public List<Integer> getConversations(Long userId) {
         List<Integer> conversations = userRepository.getUserConversationQuery(userId);
@@ -55,5 +68,26 @@ public class UserService implements IUserService {
         }
 
         return lastComplaint;
+    }
+    @Transactional
+    public boolean saveUserWithTags(IUserModel user,
+                                    ITagModel[] tags
+                ) {
+        userRepository.save((UserModel) user);
+        if(tags != null) {
+            for (TagModel pTag: (TagModel[]) tags) {
+                Optional<ITagModel> tagOptional = tagRepository.findByNameAndType(
+                        pTag.getName(),
+                        pTag.getType()
+                );
+                if (tagOptional.isEmpty()) {
+                    return false; // Tag not found
+                }
+                ITagModel tag = tagOptional.get();
+                user.addTag(tag);
+            }
+        }
+        userRepository.save((UserModel) user); // Save the user with the updated tags
+        return true; // Successfully saved
     }
 }

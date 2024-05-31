@@ -43,6 +43,8 @@ public class SecurityConfiguration {
                 .cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/auth/**").permitAll()
+                // How can client register if he doesnt know the available tags
+                .requestMatchers("/tags").permitAll()
                 .and()
                 .authorizeHttpRequests().requestMatchers("**")
                 .authenticated()

@@ -8,7 +8,39 @@
 
   **Response:**
   [id: int]
+#### GET "/users/{id}"
 
+*Gets the info about user*
+
+
+**Response:**
+- 200 {
+  complaints: ?[]
+  id: number,
+  avatarId: number | null,
+  firstName: string,
+  lastName: string,
+  description: string | null,
+  role: "student" | "teacher" | "parent",
+  subject: string | null
+  tags: {
+  id: number,
+  type: string,
+  name: string
+  }[]
+  }
+
+#### GET "/tags"
+
+*Gets the system tags
+
+
+**Response:**
+- 200 {
+  id: number,
+  type: string,
+  name: string
+  }[]
 
 #### POST "/messages/"
   *Create a new message with given JSON body information. File can be passed as array of integers or a base64 string encoding of the file.*
@@ -92,10 +124,15 @@
   description: string | null,
   phone: string,
   role: "student" | "teacher" | "parent"
+  tags: {
+    type: string,
+    name: string
+  }[] | null
   }
 
   **Response**
   - 200 {
+  complaints: ?[]
   id: number,
   avatarId: number | null,
   firstName: string,
@@ -103,6 +140,11 @@
   description: string | null,
   role: "student" | "teacher" | "parent",
   subject: string | null
+  tags: {
+    id: number,
+    type: string,
+    name: string
+  }[]
   }
   
   

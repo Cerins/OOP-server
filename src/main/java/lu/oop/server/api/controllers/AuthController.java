@@ -3,6 +3,8 @@ package lu.oop.server.api.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.api.utils.JwtUtil;
+import lu.oop.server.app.models.tags.ITagModel;
+import lu.oop.server.app.models.tags.TagModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.ParentModel;
 import lu.oop.server.app.models.users.StudentModel;
@@ -19,6 +21,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/auth")
@@ -91,6 +95,20 @@ public class AuthController {
     }
     // More about annotations here https://medium.com/paysafe-bulgaria/springboot-dto-validation-good-practices-and-breakdown-fee69277b3b0
     private static class AuthRegisterReq {
+
+        private static class ReqTag {
+            String name;
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            String type;
+        }
         String firstName;
 
         public String getFirstName() {
@@ -139,6 +157,12 @@ public class AuthController {
 
         String login;
 
+        ReqTag[] tags;
+
+        public ReqTag[] getTags() {
+            return tags;
+        }
+
     }
 
     @PostMapping("/register")
@@ -166,7 +190,30 @@ public class AuthController {
         usr.setPassword(req.getPassword());
         usr.setPhone(req.getPhone());
         usr.setLogin(req.getLogin());
-        usr = this.userService.save(usr);
+        List<TagModel> pTags = new LinkedList<>();
+        AuthRegisterReq.ReqTag[] rTags = req.getTags();
+        if(rTags != null) {
+            for(AuthRegisterReq.ReqTag rTag: rTags) {
+                TagModel tmp = new TagModel(
+                        rTag.type,
+                        rTag.name
+                );
+                pTags.add(tmp);
+            }
+
+        }
+        boolean saved = this.userService.saveUserWithTags(usr, pTags.toArray(new TagModel[0]));
+        if(!saved) {
+            // Clean up
+            userService.delete(usr);
+            throw new RequestException(
+                    HttpStatus.BAD_REQUEST,
+                    "bad tag",
+                    "one of the given tags does not exist",
+                    "user gave non existent tag"
+            );
+
+        }
         return ResponseEntity.ok(usr);
     }
 

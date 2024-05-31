@@ -15,6 +15,8 @@ import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.files.FileModel;
 import lu.oop.server.app.models.messages.MessageModel;
 
+import lu.oop.server.app.models.tags.ITagModel;
+import lu.oop.server.app.models.tags.TagModel;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 //{
@@ -80,6 +82,13 @@ abstract public class UserModel implements IUserModel {
 
     @OneToMany(mappedBy="complaintant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ComplaintModel> complaints = new LinkedList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_tag",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<TagModel> tags = new HashSet<>();
     
     // Constructors
     public UserModel() {
@@ -161,6 +170,16 @@ abstract public class UserModel implements IUserModel {
 
     @JsonProperty("role")
     abstract public String getRoleName();
+
+    @JsonProperty("tags")
+    public TagModel[] getTags() {
+//        System.out.println(this.tags);
+        return  this.tags.toArray(new TagModel[0]);
+    };
+
+    public void addTag(ITagModel tag) {
+        this.tags.add((TagModel) tag);
+    }
 
     @JsonProperty("subject")
     public String getSubject() {

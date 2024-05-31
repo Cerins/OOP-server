@@ -1,4 +1,7 @@
 package lu.oop.server.app.models.users;
+
+import lu.oop.server.app.models.tags.ITagModel;
+
 public interface IUserModel {
     Long getId();
 
@@ -41,4 +44,8 @@ public interface IUserModel {
     void setLogin(String login);
 
     String getLogin();
+
+    ITagModel[] getTags();
+
+    void addTag(ITagModel tag);
 }

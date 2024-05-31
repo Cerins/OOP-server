@@ -1,6 +1,7 @@
 package lu.oop.server.app.services;
 
 import lu.oop.server.app.models.complaints.ComplaintModel;
+import lu.oop.server.app.models.tags.ITagModel;
 import lu.oop.server.app.models.users.IUserModel;
 
 import java.util.List;
@@ -16,4 +17,11 @@ public interface IUserService {
     public Optional<IUserModel> getByLogin(String login);
 
     public IUserModel save(IUserModel user);
+
+    public void delete(IUserModel user);
+
+    public boolean saveUserWithTags(
+            IUserModel user,
+            ITagModel[] tags
+    );
 }

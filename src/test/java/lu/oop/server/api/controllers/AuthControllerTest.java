@@ -39,7 +39,7 @@ public class AuthControllerTest {
     void login_UserNotFound_ShouldThrowRequestError() {
         String email = "user@oop.test";
         String password = "baka";
-        when(userService.getByEmail(email)).thenReturn(Optional.empty());
+        when(userService.getByLogin(email)).thenReturn(Optional.empty());
         AuthController.AuthLoginReq req = new AuthController.AuthLoginReq(
                 email,
                 password
@@ -49,13 +49,13 @@ public class AuthControllerTest {
         ));
         assertEquals(e.getCode().value(), 400);
         assertEquals(e.getError(), "wrong login or password");
-        assertEquals(e.getLogMessage(), "user wrong email");
+        assertEquals(e.getLogMessage(), "user wrong login");
     }
     @Test
     void login_WrongPassword_ShouldThrowRequestError() {
         String email = "user@oop.test";
         String password = "baka";
-        when(userService.getByEmail(email)).thenReturn(Optional.of(usr));
+        when(userService.getByLogin(email)).thenReturn(Optional.of(usr));
         when(usr.passwordMatches(password)).thenReturn(false);
         AuthController.AuthLoginReq req = new AuthController.AuthLoginReq(
                 email,
@@ -75,7 +75,7 @@ public class AuthControllerTest {
         String email = "user@oop.test";
         String password = "baka";
         String token = "DA KEY";
-        when(userService.getByEmail(email)).thenReturn(Optional.of(usr));
+        when(userService.getByLogin(email)).thenReturn(Optional.of(usr));
         when(usr.passwordMatches(password)).thenReturn(true);
         when(usr.getId()).thenReturn(id);
         when(jwtUtil.generateToken(id)).thenReturn(token);

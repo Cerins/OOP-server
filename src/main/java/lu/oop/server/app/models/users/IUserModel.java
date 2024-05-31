@@ -37,4 +37,8 @@ public interface IUserModel {
     String getRoleName();
 
     String getSubject();
+
+    void setLogin(String login);
+
+    String getLogin();
 }

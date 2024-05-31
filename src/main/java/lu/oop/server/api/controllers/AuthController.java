@@ -35,20 +35,20 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
     public static class AuthLoginReq {
-        public String getEmail() {
-            return email;
+        public String getLogin() {
+            return login;
         }
 
         public String getPassword() {
             return password;
         }
 
-        AuthLoginReq(String email, String password) {
-            this.email = email;
+        AuthLoginReq(String login, String password) {
+            this.login = login;
             this.password = password;
         }
 
-        private String email;
+        private String login;
         private String password;
     }
     public static class AuthLoginRes {
@@ -65,7 +65,7 @@ public class AuthController {
     }
     @PostMapping("/login")
     public ResponseEntity<AuthLoginRes> login(@RequestBody AuthLoginReq req ) throws RequestException {
-        Optional<IUserModel> userRes = this.userService.getByEmail(req.getEmail());
+        Optional<IUserModel> userRes = this.userService.getByLogin(req.getLogin());
         String errorMsg = "wrong login or password";
         String msg = "the given login or password does not match";
         if(userRes.isEmpty()) {
@@ -73,7 +73,7 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST,
                     errorMsg,
                     msg,
-                    "user wrong email"
+                    "user wrong login"
             );
         }
         IUserModel user = userRes.get();
@@ -133,6 +133,12 @@ public class AuthController {
 
         String phone;
 
+        public String getLogin() {
+            return login;
+        }
+
+        String login;
+
     }
 
     @PostMapping("/register")
@@ -159,6 +165,7 @@ public class AuthController {
         usr.setDescription(req.getDescription());
         usr.setPassword(req.getPassword());
         usr.setPhone(req.getPhone());
+        usr.setLogin(req.getLogin());
         usr = this.userService.save(usr);
         return ResponseEntity.ok(usr);
     }

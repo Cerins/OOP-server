@@ -63,7 +63,7 @@
 
   **Request body**
   {
-    email: string,
+    login: string,
     paswword: string
   }
   
@@ -86,6 +86,7 @@
   {
   email: string,
   password: string,
+  login: string,
   firstName: string,
   lastName: string,
   description: string | null,

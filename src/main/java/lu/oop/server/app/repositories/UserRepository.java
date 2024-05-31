@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
     Optional<IUserModel> findOneByEmail(String email);
     @Query(value = "SELECT DISTINCT id FROM (SELECT m.receiver.id AS id FROM MessageModel m WHERE m.sender.id = ?1 UNION SELECT n.sender.id AS id FROM MessageModel n WHERE n.receiver.id = ?1) AS ids WHERE id != ?1")
     List<Integer> getUserConversationQuery(Long userId);
+    @Query(value = "SELECT usr FROM UserModel usr WHERE usr.login = ?1")
+    Optional<IUserModel> findOneByLogin(String login);
 }

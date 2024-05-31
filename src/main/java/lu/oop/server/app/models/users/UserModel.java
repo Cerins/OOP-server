@@ -53,6 +53,10 @@ abstract public class UserModel implements IUserModel {
     @JsonIgnore
     private String email;
 
+    @Column(name = "login", nullable = false, length = 30, unique = true)
+    @JsonProperty("login")
+    private String login;
+
     @Column(name = "password", nullable = false, length = 255)
     @JsonIgnore
     private String password;
@@ -161,5 +165,13 @@ abstract public class UserModel implements IUserModel {
     @JsonProperty("subject")
     public String getSubject() {
         return null;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 }

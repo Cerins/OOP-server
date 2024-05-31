@@ -24,6 +24,10 @@ public class UserService implements IUserService {
     public Optional<IUserModel> getByEmail(String email) {
         return userRepository.findOneByEmail(email);
     }
+
+    public Optional<IUserModel> getByLogin(String login) {
+        return userRepository.findOneByLogin(login);
+    }
     public IUserModel save(IUserModel user) {
         return userRepository.save((UserModel)user);
     }

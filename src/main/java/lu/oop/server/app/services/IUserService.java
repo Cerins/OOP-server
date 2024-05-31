@@ -13,5 +13,7 @@ public interface IUserService {
     public ComplaintModel getActiveComplaint(Long id);
     public Optional<IUserModel> getByEmail(String email);
 
+    public Optional<IUserModel> getByLogin(String login);
+
     public IUserModel save(IUserModel user);
 }

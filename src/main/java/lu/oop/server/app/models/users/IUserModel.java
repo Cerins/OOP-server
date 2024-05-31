@@ -33,9 +33,9 @@ public interface IUserModel {
 
     void setDescription(String description);
 
-    Integer getAvatarId();
+    Long getAvatarId();
 
-    void setAvatarId(Integer avatarId);
+    void setAvatarId(Long avatarId);
 
     String getRoleName();
 
@@ -48,4 +48,5 @@ public interface IUserModel {
     ITagModel[] getTags();
 
     void addTag(ITagModel tag);
+
 }

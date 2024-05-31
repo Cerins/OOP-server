@@ -3,10 +3,13 @@ package lu.oop.server.api.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lu.oop.server.app.models.complaints.ComplaintModel;
+import lu.oop.server.app.models.files.FileModel;
+import lu.oop.server.app.models.files.IFileModel;
 import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.IUserModel;
+import lu.oop.server.app.repositories.FileRepository;
 import lu.oop.server.app.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,20 +29,14 @@ import java.util.Optional;
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    private class GroundedRes {
-        @JsonProperty("grounded")
-        boolean grounded;
-
-        public GroundedRes(boolean g) {
-            grounded = g;
-        }
-    }
     private IUserService userService;
 
+    private FileRepository fileRepository;
+
     @Autowired
-    UserController(IUserService userService) {
+    UserController(IUserService userService, FileRepository fileRepository) {
         this.userService = userService;
+        this.fileRepository = fileRepository;
     }
     @GetMapping("/{id}")
     public ResponseEntity<IUserModel> getUserById(@PathVariable Long id) throws RequestException {
@@ -50,19 +48,22 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/{id}/childGrounded")
-    // Can also use hasRoles
-    // The available roles match getRoleName
-    @PreAuthorize("hasRole('parent')")
-    public ResponseEntity<GroundedRes> isChildGrounded(@PathVariable Long id) throws RequestException {
-        IParentModel loggedInUser = (IParentModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long currentID = loggedInUser.getId();
-        if(!currentID.equals(id)) {
-            // Can only look at yourself
-            throw new RequestException(HttpStatus.FORBIDDEN, "not own item", String.format("user %s requested %s status", currentID, id));
+    @GetMapping("/{id}/picture")
+    public ResponseEntity<String> getPicture(@PathVariable Long id) throws RequestException {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            throw new RequestException(HttpStatus.NOT_FOUND, "user not exists", String.format("user %s does not exist", id));
         }
-        // Not db needed since we already know the result of the user
-        return ResponseEntity.ok(new GroundedRes(loggedInUser.childGrounded()));
+        IUserModel user = oUser.get();
+        if(user.getAvatarId() != null) {
+            Optional<FileModel> f = fileRepository.findById(user.getAvatarId());
+            if(f.isEmpty()) {
+                throw new RuntimeException(String.format("%s user's avatarID points to non existent file", user.getId()));
+            }
+            String res = Base64.getEncoder().encodeToString(f.get().getFile());
+            return ResponseEntity.ok(res);
+        }
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/{id}/conversations")

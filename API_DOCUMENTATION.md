@@ -30,6 +30,14 @@
   }[]
   }
 
+GET "/users/{id}/picture"
+
+*Gets the user id pfp
+
+
+**Response:**
+- 200 bas64 string | null
+
 #### GET "/tags"
 
 *Gets the system tags
@@ -128,6 +136,7 @@
     type: string,
     name: string
   }[] | null
+  profile: base64 string | number[] | null
   }
 
   **Response**

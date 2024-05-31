@@ -69,7 +69,7 @@ abstract public class UserModel implements IUserModel {
 
     @Column(name = "avatarId")
     @JsonProperty("avatarID")
-    private Integer avatarId;
+    private Long avatarId;
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<MessageModel> sentMessages = new HashSet<>();
@@ -156,11 +156,11 @@ abstract public class UserModel implements IUserModel {
         this.description = description;
     }
 
-    public Integer getAvatarId() {
+    public Long getAvatarId() {
         return avatarId;
     }
 
-    public void setAvatarId(Integer avatarId) {
+    public void setAvatarId(Long avatarId) {
         this.avatarId = avatarId;
     }
 

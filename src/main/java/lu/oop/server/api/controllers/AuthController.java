@@ -3,12 +3,11 @@ package lu.oop.server.api.controllers;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.api.utils.JwtUtil;
+import lu.oop.server.app.models.files.FileModel;
 import lu.oop.server.app.models.tags.ITagModel;
 import lu.oop.server.app.models.tags.TagModel;
-import lu.oop.server.app.models.users.IUserModel;
-import lu.oop.server.app.models.users.ParentModel;
-import lu.oop.server.app.models.users.StudentModel;
-import lu.oop.server.app.models.users.TeacherModel;
+import lu.oop.server.app.models.users.*;
+import lu.oop.server.app.repositories.FileRepository;
 import lu.oop.server.app.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,12 +30,20 @@ public class AuthController {
 
     private IUserService userService;
 
+    // TODO hmm
+    private FileRepository fileRepository;
+
     private JwtUtil jwtUtil;
 
     @Autowired
-    public AuthController(IUserService userService, JwtUtil jwtUtil) {
+    public AuthController(
+            IUserService userService,
+            JwtUtil jwtUtil,
+            FileRepository fileRepository
+    ) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.fileRepository = fileRepository;
     }
     public static class AuthLoginReq {
         public String getLogin() {
@@ -159,8 +166,14 @@ public class AuthController {
 
         ReqTag[] tags;
 
+        byte[] picture;
+
         public ReqTag[] getTags() {
             return tags;
+        }
+
+        public byte[] getPicture() {
+            return picture;
         }
 
     }
@@ -214,6 +227,17 @@ public class AuthController {
             );
 
         }
+        byte[] fileByes = req.getPicture();
+        if(fileByes != null) {
+            FileModel f = new FileModel();
+            f.setCreator((UserModel) usr);
+            f.setName("pfp");
+            f.setFile(fileByes);
+            fileRepository.save(f);
+            usr.setAvatarId(f.getId());
+            userService.save(usr);
+        }
+
         return ResponseEntity.ok(usr);
     }
 

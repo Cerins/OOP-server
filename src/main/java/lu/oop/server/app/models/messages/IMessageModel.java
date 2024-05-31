@@ -9,4 +9,6 @@ public interface IMessageModel {
     void setText(String text);
     void setSender(UserModel sender);
     void setReceiver(UserModel receiver);
+    Long getSender();
+    Long getReceiver();
 }

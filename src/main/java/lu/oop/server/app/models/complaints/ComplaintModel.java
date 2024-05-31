@@ -94,4 +94,8 @@ public class ComplaintModel implements IComplaintModel {
     public boolean isActive(){
       return closedAt == null;
     }
+
+    public Long getId(){
+      return id;
+    }
 }

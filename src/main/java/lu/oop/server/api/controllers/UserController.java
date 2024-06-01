@@ -9,6 +9,7 @@ import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.IUserModel;
+import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.FileRepository;
 import lu.oop.server.app.services.IUserService;
 import org.slf4j.Logger;
@@ -96,5 +97,11 @@ public class UserController {
         }
         
         return ResponseEntity.ok(userService.getActiveComplaint(id));
+    }
+
+    @GetMapping("/findByUsername/{username}")
+    public ResponseEntity<List<IUserModel>> userByUsername(@PathVariable String username){
+        List<IUserModel> conversation = userService.getByUsername(username);
+        return ResponseEntity.ok(conversation);
     }
 }

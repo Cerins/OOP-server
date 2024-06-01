@@ -81,6 +81,7 @@ abstract public class UserModel implements IUserModel {
     private Set<FileModel> files = new HashSet<>();
 
     @OneToMany(mappedBy="complaintant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ComplaintModel> complaints = new LinkedList<>();
 
     @ManyToMany

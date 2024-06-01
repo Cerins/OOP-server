@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
     List<Integer> getUserConversationQuery(Long userId);
     @Query(value = "SELECT usr FROM UserModel usr WHERE usr.login = ?1")
     Optional<IUserModel> findOneByLogin(String login);
+    @Query(value = "SELECT usr FROM UserModel usr WHERE usr.login LIKE %?1%")
+    List<IUserModel> getListByLogin(String login);
 }

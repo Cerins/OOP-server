@@ -3,6 +3,7 @@ package lu.oop.server.app.services;
 import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.tags.ITagModel;
 import lu.oop.server.app.models.users.IUserModel;
+import lu.oop.server.app.models.users.UserModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +25,6 @@ public interface IUserService {
             IUserModel user,
             ITagModel[] tags
     );
+
+    public List<IUserModel> getByUsername(String username);
 }

@@ -90,4 +90,9 @@ public class UserService implements IUserService {
         userRepository.save((UserModel) user); // Save the user with the updated tags
         return true; // Successfully saved
     }
+
+    public List<IUserModel> getByUsername(String username){
+        List<IUserModel> users = userRepository.getListByLogin(username);
+        return users;
+    }
 }

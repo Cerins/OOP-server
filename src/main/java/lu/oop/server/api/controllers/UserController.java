@@ -1,17 +1,15 @@
 package lu.oop.server.api.controllers;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.files.FileModel;
-import lu.oop.server.app.models.files.IFileModel;
-import lu.oop.server.app.models.users.IAdminModel;
+import lu.oop.server.app.models.users.*;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.FileRepository;
+import lu.oop.server.app.repositories.FriendshipRepository;
 import lu.oop.server.app.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,10 +34,17 @@ public class UserController {
 
     private FileRepository fileRepository;
 
+    private FriendshipRepository friendshipRepository;
+
     @Autowired
-    UserController(IUserService userService, FileRepository fileRepository) {
+    UserController(
+            IUserService userService,
+            FileRepository fileRepository,
+            FriendshipRepository friendshipRepository
+    ) {
         this.userService = userService;
         this.fileRepository = fileRepository;
+        this.friendshipRepository  = friendshipRepository;
     }
     @GetMapping("/{id}")
     public ResponseEntity<IUserModel> getUserById(@PathVariable Long id) throws RequestException {

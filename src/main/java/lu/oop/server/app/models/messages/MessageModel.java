@@ -93,6 +93,14 @@ public class MessageModel implements IMessageModel {
         return time;
     }
 
+    public Long getSender(){
+        return sender.getId();
+    }
+
+    public Long getReceiver(){
+        return receiver.getId();
+    }
+
     public void setText(String text) {
         this.text = text;
     }
@@ -108,4 +116,5 @@ public class MessageModel implements IMessageModel {
     public void setRespondsTo(MessageModel responds){
         this.respondsTo = responds;
     }
+
 }

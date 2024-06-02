@@ -26,7 +26,7 @@ public class ComplaintModel implements IComplaintModel {
     @JsonProperty("title")
     private String title;
 
-    @Column(name = "text", nullable = false, length = 50)
+    @Column(name = "text", nullable = false, columnDefinition = "text")
     @JsonProperty("text")
     private String text;
 
@@ -93,5 +93,9 @@ public class ComplaintModel implements IComplaintModel {
 
     public boolean isActive(){
       return closedAt == null;
+    }
+
+    public Long getId(){
+      return id;
     }
 }

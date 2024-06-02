@@ -105,4 +105,14 @@ public class MessageService implements IMessageService {
 
         return new LinkedList<byte[]>();
     }
+
+    public IMessageModel getById(Long id) {
+        Optional<MessageModel> mbyMessage = messageRepository.findById(id);
+
+        if (mbyMessage.isEmpty()) {
+            throw new IllegalArgumentException("No message found");
+        }
+
+        return mbyMessage.get();
+    }
 }

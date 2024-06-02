@@ -84,7 +84,7 @@ abstract public class UserModel implements IUserModel {
     @JsonIgnore
     private List<ComplaintModel> complaints = new LinkedList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_tag",
             joinColumns = @JoinColumn(name = "user_id"),

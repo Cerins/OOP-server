@@ -17,8 +17,7 @@ import java.io.IOException;
 public class StandardAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, IOException {
-
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         RequestException e = new RequestException(
                 HttpStatus.FORBIDDEN,
                 "invalid role",

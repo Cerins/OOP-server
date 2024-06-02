@@ -27,7 +27,7 @@ import lu.oop.server.app.services.UserService;
 import java.util.List;
 import java.util.Optional;
 
-@RequestMapping("/complaint")
+@RequestMapping("/complaints")
 @RestController
 public class ComplaintController {
   private IComplaintService complaintService;

@@ -45,8 +45,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/auth/**").permitAll()
                 // How can client register if he doesnt know the available tags
                 .requestMatchers("/tags").permitAll()
-                .and()
-                .authorizeHttpRequests().requestMatchers("**")
+                .anyRequest()
                 .authenticated()
                 // Registrating the handlers
                 .and()

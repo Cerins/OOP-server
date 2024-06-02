@@ -8,6 +8,7 @@ import lu.oop.server.app.models.files.IFileModel;
 import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.app.models.users.IParentModel;
+import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.FileRepository;
@@ -103,5 +104,33 @@ public class UserController {
     public ResponseEntity<List<IUserModel>> userByUsername(@PathVariable String username){
         List<IUserModel> conversation = userService.getByUsername(username);
         return ResponseEntity.ok(conversation);
+    }
+
+    @GetMapping("/{id}/recomendedUsers")
+    public ResponseEntity<List<IUserModel>> recomendedUsers(@PathVariable int id){
+        Long userId = Long.valueOf(id);
+
+        IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(userId)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(userService.getRecomendedUsers(userId));
+    }
+
+    @GetMapping("/{id}/recomendedTeachers")
+    public ResponseEntity<List<ITeacherModel>> recomendedTeachers(@PathVariable int id){
+        Long userId = Long.valueOf(id);
+
+        IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(userId)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(userService.getRecomendedTeachers(userId));
     }
 }

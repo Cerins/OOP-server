@@ -2,6 +2,7 @@ package lu.oop.server.app.services;
 
 import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.tags.ITagModel;
+import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.UserModel;
 
@@ -27,4 +28,7 @@ public interface IUserService {
     );
 
     public List<IUserModel> getByUsername(String username);
+
+    public List<IUserModel> getRecomendedUsers(Long id);
+    public List<ITeacherModel> getRecomendedTeachers(Long id);
 }

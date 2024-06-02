@@ -5,14 +5,21 @@ import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.tags.ITagModel;
 import lu.oop.server.app.models.tags.TagModel;
 import lu.oop.server.app.models.users.IAdminModel;
+import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.TagRepository;
 import lu.oop.server.app.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.lang.Arrays;
+
 import java.util.List;
+import java.util.Set;
+import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -94,5 +101,59 @@ public class UserService implements IUserService {
     public List<IUserModel> getByUsername(String username){
         List<IUserModel> users = userRepository.getListByLogin(username);
         return users;
+    }
+
+    public List<IUserModel> getRecomendedUsers(Long id) {
+        Optional<UserModel> mbyUser = userRepository.findById(Long.valueOf(id));
+        UserModel currUser = mbyUser.get();
+        Set<TagModel> userTags = new HashSet<>(Arrays.asList(currUser.getTags()));
+
+        List<UserModel> allUsers = userRepository.findAll();
+        List<IUserModel> filteredUsers = new LinkedList<IUserModel>();
+        List<IUserModel> priorityUsers = new LinkedList<IUserModel>();
+        
+        for(UserModel user : allUsers){
+            if (user.getId().equals(id)) {
+                continue; // Skip the current user
+            }
+
+            Set<TagModel> tags = new HashSet<>(Arrays.asList(user.getTags()));
+            tags.retainAll(userTags); //Common tags
+
+            boolean agesMatch = tags.stream().anyMatch(tag -> tag.getType().equals("age"));
+            boolean establishmentMatch = tags.stream().anyMatch(tag -> tag.getType().equals("establishment"));
+
+            //If age group doesnt match dont show, show higher if establisment matches
+            if (agesMatch) {
+                if(establishmentMatch){
+                    priorityUsers.add(user);
+                }
+                else{
+                    filteredUsers.add(user);
+                }
+            }
+        }
+
+        priorityUsers.addAll(filteredUsers);
+
+        return priorityUsers;
+    }
+
+    public List<ITeacherModel> getRecomendedTeachers(Long id) {
+        Optional<UserModel> mbyUser = userRepository.findById(Long.valueOf(id));
+        UserModel currUser = mbyUser.get();
+        Set<TagModel> userTags = new HashSet<>(Arrays.asList(currUser.getTags()));
+
+        List<ITeacherModel> allTeachers = userRepository.getAllTeachers();
+        List<ITeacherModel> filteredTeachers = new LinkedList<ITeacherModel>();
+
+        for(ITeacherModel teacher: allTeachers){
+            String teacherSubject = teacher.getSubject();
+            if(userTags.stream().anyMatch(tag -> tag.getName().equals(teacherSubject))){
+                filteredTeachers.add(teacher);
+            }
+        }
+
+        return filteredTeachers;
     }
 }

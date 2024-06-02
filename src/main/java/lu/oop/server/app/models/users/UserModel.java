@@ -80,10 +80,10 @@ abstract public class UserModel implements IUserModel {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<FileModel> files = new HashSet<>();
 
-    @OneToMany(mappedBy="complaintant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="complaintant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ComplaintModel> complaints = new LinkedList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_tag",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -17,6 +17,6 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
     Optional<IUserModel> findOneByLogin(String login);
     @Query(value = "SELECT usr FROM UserModel usr WHERE usr.login LIKE %?1%")
     List<IUserModel> getListByLogin(String login);
-    @Query(value  = "SELECT * FROM person WHERE role = 2", nativeQuery = true)
+    @Query(value  = "SELECT * FROM person WHERE role = 1", nativeQuery = true)
     List<ITeacherModel> getAllTeachers();
 }

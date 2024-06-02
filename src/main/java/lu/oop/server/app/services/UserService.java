@@ -149,7 +149,7 @@ public class UserService implements IUserService {
 
         for(ITeacherModel teacher: allTeachers){
             String teacherSubject = teacher.getSubject();
-            if(userTags.stream().anyMatch(tag -> tag.getName().equals(teacherSubject))){
+            if(userTags.stream().anyMatch(tag -> tag.getName().equals(teacherSubject) && tag.getType().equals("interests"))){
                 filteredTeachers.add(teacher);
             }
         }

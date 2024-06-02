@@ -106,7 +106,7 @@ public class UserController {
         return ResponseEntity.ok(conversation);
     }
 
-    @GetMapping("/{id}/recomendedUsers")
+    @GetMapping("/{id}/recommendedUsers")
     public ResponseEntity<List<IUserModel>> recomendedUsers(@PathVariable int id){
         Long userId = Long.valueOf(id);
 
@@ -120,8 +120,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getRecomendedUsers(userId));
     }
 
-    @GetMapping("/{id}/recomendedTeachers")
-    public ResponseEntity<List<ITeacherModel>> recomendedTeachers(@PathVariable int id){
+    @GetMapping("/{id}/recommendedTeachers")
+    public ResponseEntity<List<ITeacherModel>> recomendedTeachers(@PathVariable int id) {
         Long userId = Long.valueOf(id);
 
         IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

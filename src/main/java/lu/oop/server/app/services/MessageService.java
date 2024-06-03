@@ -115,4 +115,8 @@ public class MessageService implements IMessageService {
 
         return mbyMessage.get();
     }
+
+    public void delete(Long id){
+        messageRepository.deleteById(id);
+    }
 }

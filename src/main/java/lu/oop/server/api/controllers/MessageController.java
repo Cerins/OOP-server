@@ -168,4 +168,23 @@ public class MessageController {
         List<byte[]> files = messageService.downloadFiles(id);
         return ResponseEntity.ok(files);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<IMessageModel> deleteMessages(@PathVariable Long id){
+        try {
+            IMessageModel message = messageService.getById(id);
+            IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    
+            if(!loggedInUser.getRoleName().equals("admin") && !loggedInUser.getId().equals(message.getSender())) {
+                // Can only send message from yourself
+                logger.warn("User attempted to delete not his message");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+
+            messageService.delete(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

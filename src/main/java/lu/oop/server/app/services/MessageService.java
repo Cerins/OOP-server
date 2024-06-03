@@ -30,7 +30,7 @@ public class MessageService implements IMessageService {
         this.fileRepository = fileRepository;
     }
 
-    public void create(String text, Long senderId, Long receiverId, Long respondsToId, byte[] file, String fileName){
+    public IMessageModel create(String text, Long senderId, Long receiverId, Long respondsToId, byte[] file, String fileName){
 
         Optional<UserModel> mbySender = userRepository.findById(senderId);
         Optional<UserModel> mbyReceiver = userRepository.findById(receiverId);
@@ -64,6 +64,8 @@ public class MessageService implements IMessageService {
             fileMessage.attachFile(fileModel);
     
             messageRepository.save(fileMessage);
+
+            return (IMessageModel) fileMessage;
         } else {
             MessageModel message = new MessageModel();
             message.setText(text);
@@ -73,6 +75,8 @@ public class MessageService implements IMessageService {
                 message.setRespondsTo(mbyRespondsTo.get());
             }
             messageRepository.save(message);
+
+            return message;
         }
     }
 

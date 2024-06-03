@@ -87,11 +87,7 @@ public class MessageControllerTest {
     public void getConversation_UserNotPartOfConversation_ShouldReturnForbidden() {
         when(loggedInUser.getId()).thenReturn(3L);
 
-        ConversationRequest conversationRequest = new ConversationRequest();
-        conversationRequest.setUser1Id(1);
-        conversationRequest.setUser2Id(2);
-
-        ResponseEntity<List<IMessageModel>> response = messageController.getConversation(conversationRequest);
+        ResponseEntity<List<IMessageModel>> response = messageController.getConversation(1L, 2L, null);
 
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }

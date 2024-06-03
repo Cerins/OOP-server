@@ -138,21 +138,18 @@ public class MessageController {
         }
     }
 
-    @GetMapping()
-    public ResponseEntity<List<IMessageModel>> getConversation(@RequestBody ConversationRequest conversationRequest) {
-        Long user1Id = Long.valueOf(conversationRequest.getUser1Id());
-        Long user2Id = Long.valueOf(conversationRequest.getUser2Id());
-        Timestamp dateTimeFrom = conversationRequest.getDateTimeFrom();
+    @GetMapping("/{senderId}/{receiverId}")
+    public ResponseEntity<List<IMessageModel>> getConversation(@PathVariable Long senderId, @PathVariable Long receiverId, @RequestParam("dateTimeFrom") Timestamp dateTimeFrom) {
 
         IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     
-        if(!loggedInUser.getId().equals(user1Id) && !loggedInUser.getId().equals(user2Id)) {
+        if(!loggedInUser.getId().equals(senderId) && !loggedInUser.getId().equals(receiverId)) {
             // Can see your own conversations
             logger.warn("User attempted to see conversation he isnt part of");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        List<IMessageModel> conversation = messageService.getConversation(user1Id, user2Id, dateTimeFrom);
+        List<IMessageModel> conversation = messageService.getConversation(senderId, receiverId, dateTimeFrom);
         return ResponseEntity.ok(conversation);
     }
 

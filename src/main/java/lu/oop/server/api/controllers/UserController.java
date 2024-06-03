@@ -4,6 +4,10 @@ import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.files.FileModel;
 import lu.oop.server.app.models.users.*;
 import lu.oop.server.api.exceptions.RequestException;
+import lu.oop.server.app.models.users.IParentModel;
+import lu.oop.server.app.models.users.ITeacherModel;
+import lu.oop.server.app.models.users.IUserModel;
+import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.FileRepository;
 import lu.oop.server.app.repositories.FriendshipRepository;
 import lu.oop.server.app.services.IUserService;
@@ -102,6 +106,39 @@ public class UserController {
         return ResponseEntity.ok(userService.getActiveComplaint(id));
     }
 
+    @GetMapping("/findByUsername/{username}")
+    public ResponseEntity<List<IUserModel>> userByUsername(@PathVariable String username){
+        List<IUserModel> conversation = userService.getByUsername(username);
+        return ResponseEntity.ok(conversation);
+    }
+
+    @GetMapping("/{id}/recommendedUsers")
+    public ResponseEntity<List<IUserModel>> recomendedUsers(@PathVariable int id){
+        Long userId = Long.valueOf(id);
+
+        IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(userId)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(userService.getRecomendedUsers(userId));
+    }
+
+    @GetMapping("/{id}/recommendedTeachers")
+    public ResponseEntity<List<ITeacherModel>> recomendedTeachers(@PathVariable int id) {
+        Long userId = Long.valueOf(id);
+
+        IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!loggedInUser.getId().equals(userId)) {
+            // Can only look at yourself
+            logger.warn("User attempted to check other user");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(userService.getRecomendedTeachers(userId));
+    }
     @GetMapping("{id}/friendships")
     public ResponseEntity<List<UserModel>> friendships(@PathVariable Long id) throws RequestException {
         Optional<IUserModel> oUser = userService.getById(id);

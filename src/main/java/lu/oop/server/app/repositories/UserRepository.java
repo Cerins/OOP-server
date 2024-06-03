@@ -1,6 +1,9 @@
 package lu.oop.server.app.repositories;
 
+import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
+import lu.oop.server.app.models.users.TeacherModel;
+
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +17,6 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
     List<Integer> getUserConversationQuery(Long userId);
     @Query(value = "SELECT usr FROM UserModel usr WHERE usr.login = ?1")
     Optional<IUserModel> findOneByLogin(String login);
+    @Query(value = "SELECT usr FROM UserModel usr WHERE usr.login LIKE %?1%")
+    List<IUserModel> getListByLogin(String login);
 }

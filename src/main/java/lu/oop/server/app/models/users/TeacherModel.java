@@ -7,10 +7,11 @@ import jakarta.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("1")
-public class TeacherModel extends UserModel implements  ITeacherModel {
+public class TeacherModel extends UserModel implements ITeacherModel {
     @Column(name = "subject", length = 50)
     @JsonIgnore
     private String subject;
+
     @Override
     public String getRoleName() {
         return "teacher";

@@ -5,28 +5,40 @@ import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.tags.ITagModel;
 import lu.oop.server.app.models.tags.TagModel;
 import lu.oop.server.app.models.users.IAdminModel;
+import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
+import lu.oop.server.app.models.users.TeacherModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.TagRepository;
+import lu.oop.server.app.repositories.TeacherRepository;
 import lu.oop.server.app.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.lang.Arrays;
+
 import java.util.List;
+import java.util.Set;
+import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
     private UserRepository userRepository;
-
     private TagRepository tagRepository;
+    private TeacherRepository teacherRepository;
+
     @Autowired
     public UserService(
             UserRepository userRepository,
-            TagRepository tagRepository
+            TagRepository tagRepository,
+            TeacherRepository teacherRepository
     ) {
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
+        this.teacherRepository = teacherRepository;
     }
     public Optional<IUserModel> getById(Long id) {
         return userRepository.findById(id).map(u -> u);
@@ -89,5 +101,64 @@ public class UserService implements IUserService {
         }
         userRepository.save((UserModel) user); // Save the user with the updated tags
         return true; // Successfully saved
+    }
+
+    public List<IUserModel> getByUsername(String username){
+        List<IUserModel> users = userRepository.getListByLogin(username);
+        return users;
+    }
+
+    public List<IUserModel> getRecomendedUsers(Long id) {
+        Optional<UserModel> mbyUser = userRepository.findById(Long.valueOf(id));
+        UserModel currUser = mbyUser.get();
+        Set<TagModel> userTags = new HashSet<>(Arrays.asList(currUser.getTags()));
+
+        List<UserModel> allUsers = userRepository.findAll();
+        List<IUserModel> filteredUsers = new LinkedList<IUserModel>();
+        List<IUserModel> priorityUsers = new LinkedList<IUserModel>();
+        
+        for(UserModel user : allUsers){
+            if (user.getId().equals(id)) {
+                continue; // Skip the current user
+            }
+
+            Set<TagModel> tags = new HashSet<>(Arrays.asList(user.getTags()));
+            tags.retainAll(userTags); //Common tags
+
+            boolean agesMatch = tags.stream().anyMatch(tag -> tag.getType().equals("age"));
+            boolean establishmentMatch = tags.stream().anyMatch(tag -> tag.getType().equals("establishment"));
+
+            //If age group doesnt match dont show, show higher if establisment matches
+            if (agesMatch) {
+                if(establishmentMatch){
+                    priorityUsers.add(user);
+                }
+                else{
+                    filteredUsers.add(user);
+                }
+            }
+        }
+
+        priorityUsers.addAll(filteredUsers);
+
+        return priorityUsers;
+    }
+
+    public List<ITeacherModel> getRecomendedTeachers(Long id) {
+        Optional<UserModel> mbyUser = userRepository.findById(Long.valueOf(id));
+        UserModel currUser = mbyUser.get();
+        Set<TagModel> userTags = new HashSet<>(Arrays.asList(currUser.getTags()));
+
+        List<TeacherModel> allTeachers = teacherRepository.findAll();
+        List<ITeacherModel> filteredTeachers = new LinkedList<ITeacherModel>();
+
+        for(TeacherModel teacher: allTeachers){
+            String teacherSubject = teacher.getSubject();
+            if(userTags.stream().anyMatch(tag -> tag.getName().equals(teacherSubject) && tag.getType().equals("interests"))){
+                filteredTeachers.add(teacher);
+            }
+        }
+
+        return filteredTeachers;
     }
 }

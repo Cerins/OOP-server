@@ -1,17 +1,15 @@
 package lu.oop.server.api.controllers;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lu.oop.server.app.models.complaints.ComplaintModel;
 import lu.oop.server.app.models.files.FileModel;
-import lu.oop.server.app.models.files.IFileModel;
-import lu.oop.server.app.models.users.IAdminModel;
+import lu.oop.server.app.models.users.*;
 import lu.oop.server.api.exceptions.RequestException;
 import lu.oop.server.app.models.users.IParentModel;
 import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.FileRepository;
+import lu.oop.server.app.repositories.FriendshipRepository;
 import lu.oop.server.app.services.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,10 +34,17 @@ public class UserController {
 
     private FileRepository fileRepository;
 
+    private FriendshipRepository friendshipRepository;
+
     @Autowired
-    UserController(IUserService userService, FileRepository fileRepository) {
+    UserController(
+            IUserService userService,
+            FileRepository fileRepository,
+            FriendshipRepository friendshipRepository
+    ) {
         this.userService = userService;
         this.fileRepository = fileRepository;
+        this.friendshipRepository  = friendshipRepository;
     }
     @GetMapping("/{id}")
     public ResponseEntity<IUserModel> getUserById(@PathVariable Long id) throws RequestException {
@@ -132,5 +138,47 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userService.getRecomendedTeachers(userId));
+    }
+    @GetMapping("{id}/friendships")
+    public ResponseEntity<List<UserModel>> friendships(@PathVariable Long id) throws RequestException {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            throw new RequestException(HttpStatus.NOT_FOUND, "user not exists", String.format("user %s does not exist", id));
+        }
+        IUserModel user = oUser.get();
+        List<FriendshipModel> frens = friendshipRepository.findByUserAndStatus((UserModel) user, FriendshipModel.STATUS_ACCEPTED);
+        List<UserModel> frenUsers = new LinkedList<>();
+        for(FriendshipModel fr: frens) {
+            frenUsers.add(fr.getOther((UserModel) user));
+        }
+        return ResponseEntity.ok(frenUsers);
+    }
+    @GetMapping("{id}/friendships/to")
+    public ResponseEntity<List<UserModel>> getIncomingFriendships(@PathVariable Long id) throws RequestException {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            throw new RequestException(HttpStatus.NOT_FOUND, "user not exists", String.format("user %s does not exist", id));
+        }
+        IUserModel user = oUser.get();
+        List<FriendshipModel> incominFrens = friendshipRepository.findByResponderAndStatus((UserModel) user, FriendshipModel.STATUS_INIT);
+        List<UserModel> frenUsers = new LinkedList<>();
+        for(FriendshipModel fr: incominFrens) {
+            frenUsers.add(fr.getOther((UserModel) user));
+        }
+        return ResponseEntity.ok(frenUsers);
+    }
+    @GetMapping("{id}/friendships/from")
+    public ResponseEntity<List<UserModel>> getOutcomingFriendships(@PathVariable Long id) throws RequestException {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            throw new RequestException(HttpStatus.NOT_FOUND, "user not exists", String.format("user %s does not exist", id));
+        }
+        IUserModel user = oUser.get();
+        List<FriendshipModel> outcominFrens = friendshipRepository.findByRequestorAndStatus((UserModel) user, FriendshipModel.STATUS_INIT);
+        List<UserModel> frenUsers = new LinkedList<>();
+        for(FriendshipModel fr: outcominFrens) {
+            frenUsers.add(fr.getOther((UserModel) user));
+        }
+        return ResponseEntity.ok(frenUsers);
     }
 }

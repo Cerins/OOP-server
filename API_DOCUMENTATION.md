@@ -111,7 +111,22 @@ GET "/users/{id}/picture"
   **Response**
   
   - 200 {
-    token: string
+    token: string,
+    user: {
+    complaints: ?[]
+    id: number,
+    avatarId: number | null,
+    firstName: string,
+    lastName: string,
+    description: string | null,
+    role: "student" | "teacher" | "parent",
+    subject: string | null
+    tags: {
+    id: number,
+    type: string,
+    name: string
+    }[]
+    }
   }
   
 #### POST "/auth/logout"

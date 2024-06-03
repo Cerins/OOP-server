@@ -67,11 +67,19 @@ public class AuthController {
             return token;
         }
 
+        public IUserModel getUser() {
+            return user;
+        }
+
         @JsonProperty("token")
         private String token;
 
-        public AuthLoginRes(String token) {
+        @JsonProperty("user")
+        private IUserModel user;
+
+        public AuthLoginRes(String token, IUserModel user) {
             this.token = token;
+            this.user = user;
         }
     }
     @PostMapping("/login")
@@ -98,7 +106,7 @@ public class AuthController {
             );
         }
         String token = this.jwtUtil.generateToken(user.getId());
-        return ResponseEntity.ok(new AuthLoginRes(token));
+        return ResponseEntity.ok(new AuthLoginRes(token, user));
     }
     // More about annotations here https://medium.com/paysafe-bulgaria/springboot-dto-validation-good-practices-and-breakdown-fee69277b3b0
     private static class AuthRegisterReq {

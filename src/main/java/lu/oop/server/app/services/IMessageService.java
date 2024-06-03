@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public interface IMessageService {
   public void create(String text, Long senderId, Long receiverId, Long respondsToId, byte[] file, String fileName);
   public List<IMessageModel> getConversation(Long firstUserId, Long secondUserId, Timestamp dateTimeFrom);
+  public IMessageModel getById(Long id);
   public List<byte[]> downloadFiles(Long id);
 }
   

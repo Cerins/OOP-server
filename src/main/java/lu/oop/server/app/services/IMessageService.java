@@ -10,5 +10,6 @@ public interface IMessageService {
   public List<IMessageModel> getConversation(Long firstUserId, Long secondUserId, Timestamp dateTimeFrom);
   public IMessageModel getById(Long id);
   public List<byte[]> downloadFiles(Long id);
+  public void delete(Long id);
 }
   

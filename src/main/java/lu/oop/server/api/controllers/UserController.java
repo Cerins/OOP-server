@@ -139,4 +139,46 @@ public class UserController {
 
         return ResponseEntity.ok(userService.getRecomendedTeachers(userId));
     }
+    @GetMapping("{id}/friendships")
+    public ResponseEntity<List<UserModel>> friendships(@PathVariable Long id) throws RequestException {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            throw new RequestException(HttpStatus.NOT_FOUND, "user not exists", String.format("user %s does not exist", id));
+        }
+        IUserModel user = oUser.get();
+        List<FriendshipModel> frens = friendshipRepository.findByUserAndStatus((UserModel) user, FriendshipModel.STATUS_ACCEPTED);
+        List<UserModel> frenUsers = new LinkedList<>();
+        for(FriendshipModel fr: frens) {
+            frenUsers.add(fr.getOther((UserModel) user));
+        }
+        return ResponseEntity.ok(frenUsers);
+    }
+    @GetMapping("{id}/friendships/to")
+    public ResponseEntity<List<UserModel>> getIncomingFriendships(@PathVariable Long id) throws RequestException {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            throw new RequestException(HttpStatus.NOT_FOUND, "user not exists", String.format("user %s does not exist", id));
+        }
+        IUserModel user = oUser.get();
+        List<FriendshipModel> incominFrens = friendshipRepository.findByResponderAndStatus((UserModel) user, FriendshipModel.STATUS_INIT);
+        List<UserModel> frenUsers = new LinkedList<>();
+        for(FriendshipModel fr: incominFrens) {
+            frenUsers.add(fr.getOther((UserModel) user));
+        }
+        return ResponseEntity.ok(frenUsers);
+    }
+    @GetMapping("{id}/friendships/from")
+    public ResponseEntity<List<UserModel>> getOutcomingFriendships(@PathVariable Long id) throws RequestException {
+        Optional<IUserModel> oUser = userService.getById(id);
+        if(oUser.isEmpty()) {
+            throw new RequestException(HttpStatus.NOT_FOUND, "user not exists", String.format("user %s does not exist", id));
+        }
+        IUserModel user = oUser.get();
+        List<FriendshipModel> outcominFrens = friendshipRepository.findByRequestorAndStatus((UserModel) user, FriendshipModel.STATUS_INIT);
+        List<UserModel> frenUsers = new LinkedList<>();
+        for(FriendshipModel fr: outcominFrens) {
+            frenUsers.add(fr.getOther((UserModel) user));
+        }
+        return ResponseEntity.ok(frenUsers);
+    }
 }

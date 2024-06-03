@@ -139,7 +139,7 @@ public class MessageController {
     }
 
     @GetMapping("/{senderId}/{receiverId}")
-    public ResponseEntity<List<IMessageModel>> getConversation(@PathVariable Long senderId, @PathVariable Long receiverId, @RequestParam("dateTimeFrom") Timestamp dateTimeFrom) {
+    public ResponseEntity<List<IMessageModel>> getConversation(@PathVariable Long senderId, @PathVariable Long receiverId, @RequestParam(name = "dateTimeFrom", required = false) Timestamp dateTimeFrom) {
 
         IUserModel loggedInUser = (IUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     

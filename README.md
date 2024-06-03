@@ -29,6 +29,13 @@ docker compose up -d   // (setup the postgres database)
 ./gradlew bootRun
 ```
 If you wanna stop the postgres -> “docker compose down”
+
+### Datu sagatave
+
+Piemēru dati jau sagatavoti, tos var izveidot, ja datubāze ir palaista un izpildot komandu no tās pašas direktorijas kā projekts.
+```
+docker compose exec database psql -U user -d studybuddy -c "$(cat data.sql)"
+```
  
 ### Kā dabūt projektu uz lokālās sistēmas?
 Datubāze un DockerCompose:

@@ -6,6 +6,7 @@ import lu.oop.server.app.models.users.IUserModel;
 import lu.oop.server.app.models.users.StudentModel;
 import lu.oop.server.app.models.users.TeacherModel;
 import lu.oop.server.app.models.users.UserModel;
+import lu.oop.server.app.repositories.TeacherRepository;
 import lu.oop.server.app.repositories.UserRepository;
 import lu.oop.server.app.services.UserService;
 
@@ -24,6 +25,9 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private TeacherRepository teacherRepository;
 
     @InjectMocks
     private UserService userService;
@@ -104,7 +108,7 @@ class UserServiceTest {
       teacher3.setSubject("Theology");
 
       when(userRepository.findById(any())).thenReturn(Optional.of(currentUser));
-      when(userRepository.getAllTeachers()).thenReturn(Arrays.asList(teacher1, teacher2, teacher3));
+      when(teacherRepository.findAll()).thenReturn(Arrays.asList(teacher1, teacher2, teacher3));
 
 
       // Execute the method under test

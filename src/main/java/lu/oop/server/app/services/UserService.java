@@ -7,8 +7,10 @@ import lu.oop.server.app.models.tags.TagModel;
 import lu.oop.server.app.models.users.IAdminModel;
 import lu.oop.server.app.models.users.ITeacherModel;
 import lu.oop.server.app.models.users.IUserModel;
+import lu.oop.server.app.models.users.TeacherModel;
 import lu.oop.server.app.models.users.UserModel;
 import lu.oop.server.app.repositories.TagRepository;
+import lu.oop.server.app.repositories.TeacherRepository;
 import lu.oop.server.app.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +27,18 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
     private UserRepository userRepository;
-
     private TagRepository tagRepository;
+    private TeacherRepository teacherRepository;
+
     @Autowired
     public UserService(
             UserRepository userRepository,
-            TagRepository tagRepository
+            TagRepository tagRepository,
+            TeacherRepository teacherRepository
     ) {
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
+        this.teacherRepository = teacherRepository;
     }
     public Optional<IUserModel> getById(Long id) {
         return userRepository.findById(id).map(u -> u);
@@ -144,10 +149,10 @@ public class UserService implements IUserService {
         UserModel currUser = mbyUser.get();
         Set<TagModel> userTags = new HashSet<>(Arrays.asList(currUser.getTags()));
 
-        List<ITeacherModel> allTeachers = userRepository.getAllTeachers();
+        List<TeacherModel> allTeachers = teacherRepository.findAll();
         List<ITeacherModel> filteredTeachers = new LinkedList<ITeacherModel>();
 
-        for(ITeacherModel teacher: allTeachers){
+        for(TeacherModel teacher: allTeachers){
             String teacherSubject = teacher.getSubject();
             if(userTags.stream().anyMatch(tag -> tag.getName().equals(teacherSubject) && tag.getType().equals("interests"))){
                 filteredTeachers.add(teacher);

@@ -2,6 +2,7 @@ package lu.oop.server.app.models.messages;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.LinkedList;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,7 +49,7 @@ public class MessageModel implements IMessageModel {
     name = "message_file", 
     joinColumns = @JoinColumn(name = "message_id"), 
     inverseJoinColumns = @JoinColumn(name = "file_id"))
-    List<FileModel> files;
+    List<FileModel> files = new LinkedList<FileModel>();
 
     //Custom Json
     @JsonProperty("senderId")

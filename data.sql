@@ -213,6 +213,12 @@ INSERT INTO public.message (id, receiver_id, responds_to_id, sender_id, time, te
 INSERT INTO public.message_file (file_id, message_id) VALUES (1, 6);
 
 
+alter sequence person_id_seq restart with 100;
+alter sequence complaint_id_seq restart with 100;
+alter sequence file_id_seq restart with 100;
+alter sequence friendship_id_seq restart with 100;
+alter sequence message_id_seq restart with 100;
+alter sequence tag_id_seq restart with 100;
 
 
 

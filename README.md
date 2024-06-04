@@ -36,6 +36,10 @@ Piemēru dati jau sagatavoti, tos var izveidot, ja datubāze ir palaista un izpi
 ```
 docker compose exec database psql -U user -d studybuddy -c "$(cat data.sql)"
 ```
+
+Sagatave izveido 3 students, 1 vecāku, 1, administratoru un 3 privātskolotājus.
+
+Studenti lietotājvārdi - maijabite, vilnis97, skujinsbaba. Visu lietotāju paroles ir "password".
  
 ### Kā dabūt projektu uz lokālās sistēmas?
 Datubāze un DockerCompose:
@@ -47,5 +51,9 @@ https://spring.io/guides/gs/accessing-data-mysql
 https://docs.docker.com/compose/install/
  
 ### Papildus informācija:
-Daļa no “Back-End” funkcionalitātēm vēl netiek atbalstīta “Front-End” pusē;
-Darbs tika izstrādāts grupā.
+
+- Daļa no “Back-End” funkcionalitātēm vēl netiek atbalstīta “Front-End” pusē;
+- Darbs tika izstrādāts grupā.
+- Projekts balstīts uz projektējumu, kas izstrādāts "Programminženierija" kursa ietvaros. Dokuments papildināts ar izvietojuma un programmas modeļu klašu diagrammu:
+  https://docs.google.com/document/d/1Yi3KF1tdhZ42VxTFy1Twajkgzo7QjPu6B03mGTWt80s/edit?usp=sharing
+

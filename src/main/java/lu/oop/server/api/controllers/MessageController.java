@@ -130,9 +130,9 @@ public class MessageController {
                 text = "";
             }
 
-            messageService.create(text, senderId, receiverId, respondsToId, file, fileName);
+            IMessageModel created = messageService.create(text, senderId, receiverId, respondsToId, file, fileName);
 
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(created);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }

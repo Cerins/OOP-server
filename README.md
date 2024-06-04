@@ -36,6 +36,10 @@ Piemēru dati jau sagatavoti, tos var izveidot, ja datubāze ir palaista un izpi
 ```
 docker compose exec database psql -U user -d studybuddy -c "$(cat data.sql)"
 ```
+
+Sagatave izveido 3 students, 1 vecāku, 1, administratoru un 3 privātskolotājus.
+
+Studenti lietotājvārdi - maijabite, vilnis97, skujinsbaba. Visu lietotāju paroles ir "password".
  
 ### Kā dabūt projektu uz lokālās sistēmas?
 Datubāze un DockerCompose:

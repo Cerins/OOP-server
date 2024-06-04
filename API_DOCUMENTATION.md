@@ -30,18 +30,142 @@
   }[]
   }
 
-GET "/users/{id}/picture"
+#### GET "/users/{id}/picture"
 
-*Gets the user id pfp
+*Gets the user id pfp*
 
 
 **Response:**
 - 200 bas64 string | null
 
+#### GET "/users/{id}/assignedComplaints"
+
+*Gets the admin users assigned complaints*
+
+
+**Response:**
+- 200 complaint[]
+
+#### GET "/users/{id}/activeComplaint"
+
+*Gets the users last complaint*
+
+
+**Response:**
+- 200 complaint
+
+#### GET "/users/findByUsername/{username}"
+
+*Finds users with username like given one*
+
+
+**Response:**
+- 200 user[]
+
+
+#### GET "/users/{id}/recommendedUsers"
+
+*Gets the users system recommends the current user to contact*
+
+**Response:**
+- 200 user[]
+
+
+#### GET "/users/{id}/recommendedTeachers"
+
+*Gets the teachers system recommends the current user to contact*
+
+
+**Response:**
+- 200 teacher[]
+
+#### GET "/users/{id}/friendships"
+
+*Gets the users friend list*
+
+
+**Response:**
+- 200 user[]
+
+
+#### GET "/users/{id}/friendships/to"
+
+*Gets the users pending friend requests*
+
+
+**Response:**
+- 200 user[]
+
+#### GET "/users/{id}/friendships/from"
+
+*Gets the users friend requests that havent been answered*
+
+
+**Response:**
+- 200 user[]
+
+#### POST "/friendships"
+  *Create a new friendship request from current user to user with login given in pram.*
+  
+  **Params:**
+  {
+  login: string;
+  }
+
+  **Response:**
+- 200 friendship
+
+#### PATCH "/friendships/{id}/approve"
+  *Current user approves the friendship with id.*
+
+  **Response:**
+  STATUS 200 OK
+
+#### PATCH "/friendships/{id}/reject"
+  *Current user rejects the friendship with id.*
+
+  **Response:**
+  STATUS 200 OK
+
+
+#### POST "/complaints"
+  *Create a new complaint with given JSON body information.*
+  
+  **Params:**
+  {
+  text: string,
+  title: string,
+  complaintantId: int
+  }
+
+  **Response:**
+  STATUS 200 OK
+
+
+#### PATCH "/complaints/{id}/assign/{asigneeId}"
+  *Admin can assign the complaint to another admin.*
+
+  **Response:**
+  STATUS 200 OK
+
+#### PATCH "/complaints/{id}/close"
+  *Admin that has assigned complaint can close it.*
+
+  **Response:**
+  STATUS 200 OK
+
+
+#### GET "/complaints/unassigned"
+
+*Admin gets unassigned complaints*
+
+**Response:**
+-200 complaint[]
+
+
 #### GET "/tags"
 
-*Gets the system tags
-
+*Gets the system tags*
 
 **Response:**
 - 200 {
@@ -64,7 +188,7 @@ GET "/users/{id}/picture"
   }
 
   **Response:**
-  STATUS 200 OK
+  STATUS 200 OK message
 
 #### GET "/messages"
   *Get all messages sent between user1 and user2 in chronological order*

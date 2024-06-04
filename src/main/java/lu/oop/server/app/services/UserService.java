@@ -129,7 +129,7 @@ public class UserService implements IUserService {
             boolean establishmentMatch = tags.stream().anyMatch(tag -> tag.getType().equals("establishment"));
 
             //If age group doesnt match dont show, show higher if establisment matches
-            if (agesMatch) {
+            if (agesMatch && tags.size() >= 2) {
                 if(establishmentMatch){
                     priorityUsers.add(user);
                 }

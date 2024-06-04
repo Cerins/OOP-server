@@ -47,22 +47,26 @@ class UserServiceTest {
         establishmentTag.setType("establishment");
         establishmentTag.setName("Latvijas Univeritāte");
 
+        TagModel interestTag = new TagModel();
+        interestTag.setType("interests");
+        interestTag.setName("Astrology");
+
+
         // Setup current user with specific tags
         UserModel currentUser = new StudentModel();
         currentUser.setId(1L);
         currentUser.addTag(ageTag);
         currentUser.addTag(establishmentTag);
+        currentUser.addTag(interestTag);
 
         // Setup other users with different tags
         UserModel user1 = new StudentModel();
         user1.setId(2L);
-        user1.addTag(ageTag); // Match by age
+        user1.addTag(interestTag);
+        user1.addTag(ageTag); // Match by age and interest
 
         UserModel user2 = new StudentModel();
         user2.setId(3L);
-        TagModel user2Tag2 = new TagModel();
-        user2Tag2.setType("establishment");
-        user2Tag2.setName("Latvijas Univeritāte");
         user2.addTag(ageTag); // Match by age and establishment
         user2.addTag(establishmentTag);
 
@@ -70,6 +74,7 @@ class UserServiceTest {
         user3.setId(4L);
         TagModel user3Tag = new TagModel();
         user3Tag.setType("interest");
+        user3Tag.setName("Math");
         user3.addTag(user3Tag); //No match
 
         when(userRepository.findById(any())).thenReturn(Optional.of(currentUser));
